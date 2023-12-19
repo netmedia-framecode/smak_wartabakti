@@ -17,3 +17,6 @@
 <!-- Custom styles for plugin -->
 <script src="<?= $baseURL ?>assets/sweetalert/dist/sweetalert2.all.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+
+<!-- Custom styles for this page -->
+<link href="<?= $baseURL ?>assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">

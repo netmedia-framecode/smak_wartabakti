@@ -91,7 +91,7 @@ require_once("../templates/views_top.php"); ?>
                         echo date_format($tanggal_hasil, "d M Y");
                       } ?></td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#formulir<?= $data['id_pendaftaran'] ?>">
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#formulir<?= $data['id_pendaftaran'] ?>">
                       <i class="bi bi-eye"></i> Berkas
                     </button>
                     <div class="modal fade" id="formulir<?= $data['id_pendaftaran'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -109,9 +109,11 @@ require_once("../templates/views_top.php"); ?>
                         </div>
                       </div>
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ubah<?= $data['id_pendaftaran'] ?>">
-                      <i class="bi bi-check-all"></i> Seleksi
-                    </button>
+                    <?php if (empty($data['nilai_ujian'])) { ?>
+                      <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ubah<?= $data['id_pendaftaran'] ?>">
+                        <i class="bi bi-check-all"></i> Seleksi
+                      </button>
+                    <?php } ?>
                     <div class="modal fade" id="ubah<?= $data['id_pendaftaran'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
                         <div class="modal-content">
@@ -125,6 +127,7 @@ require_once("../templates/views_top.php"); ?>
                             <input type="hidden" name="id_hasil_seleksi" value="<?= $data['id_hasil_seleksi'] ?>">
                             <input type="hidden" name="nama_lengkap" value="<?= $data['nama_lengkap'] ?>">
                             <input type="hidden" name="email" value="<?= $data['email'] ?>">
+                            <input type="hidden" name="id_user" value="<?= $data['id_user'] ?>">
                             <div class="modal-body">
                               <div class="form-group">
                                 <label for="nilai_ujian">Nilai Ujian</label>

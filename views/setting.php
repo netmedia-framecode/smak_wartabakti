@@ -32,6 +32,21 @@ require_once("../templates/views_top.php"); ?>
                     </div>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label for="bg">Masukan Warna Primary</label>
+                  <div class="d-flex justify-content-start align-content-center">
+                    <input type="color" name="bg" class="form-control w-50" id="bg" value="<?= $data['bg'] ?>" required>
+                    <span class="my-auto ml-3" id="bgCode">#3a61d0</span>
+                  </div>
+                </div>
+
+                <script>
+                  // Tambahkan event listener untuk mendeteksi perubahan warna
+                  document.getElementById('bg').addEventListener('input', function() {
+                    // Perbarui nilai kode warna
+                    document.getElementById('bgCode').textContent = this.value;
+                  });
+                </script>
                 <button type="submit" name="setting" class="btn btn-primary btn-user btn-block">
                   Ubah
                 </button>

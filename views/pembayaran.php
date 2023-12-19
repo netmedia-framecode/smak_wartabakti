@@ -18,18 +18,24 @@ require_once("../templates/views_top.php"); ?>
             <tr>
               <th class="text-center">Nama Peserta</th>
               <th class="text-center">Jumlah Bayar</th>
+              <th class="text-center">Batas Bayar</th>
               <th class="text-center">Tgl Bayar</th>
               <th class="text-center">Status Bayar</th>
-              <th class="text-center">Aksi</th>
+              <?php if ($id_role == 3) { ?>
+                <th class="text-center">Aksi</th>
+              <?php } ?>
             </tr>
           </thead>
           <tfoot>
             <tr>
               <th class="text-center">Nama Peserta</th>
               <th class="text-center">Jumlah Bayar</th>
+              <th class="text-center">Batas Bayar</th>
               <th class="text-center">Tgl Bayar</th>
               <th class="text-center">Status Bayar</th>
-              <th class="text-center">Aksi</th>
+              <?php if ($id_role == 3) { ?>
+                <th class="text-center">Aksi</th>
+              <?php } ?>
             </tr>
           </tfoot>
           <tbody>
@@ -37,19 +43,21 @@ require_once("../templates/views_top.php"); ?>
               <tr>
                 <td><?= $data['nama_lengkap'] ?></td>
                 <td>Rp. <?= number_format($data['jumlah_pembayaran']) ?></td>
+                <td><?= $data['batas_pembayaran'] ?></td>
                 <td><?= $data['tanggal_pembayaran'] ?></td>
                 <td><?= $data['status_pembayaran'] ?></td>
-                <td class="text-center">
-                  <?php if ($id_role == 3) { ?>
+                <?php if ($id_role == 3) { ?>
+                  <td class="text-center">
                     <form action="" method="post">
                       <input type="hidden" name="id_pembayaran" value="<?= $data['id_pembayaran'] ?>">
                       <input type="hidden" name="order_id" value="<?= $data['order_id'] ?>">
+                      <input type="hidden" name="batas_pembayaran" value="<?= $data['batas_pembayaran'] ?>">
                       <button type="submit" name="add_pembayaran" class="btn btn-primary btn-sm">
                         <i class="bi bi-receipt-cutoff"></i> Bayar
                       </button>
                     </form>
-                  <?php } else ?>
-                </td>
+                  </td>
+                <?php } ?>
               </tr>
             <?php } ?>
           </tbody>

@@ -1,4 +1,6 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<?php foreach ($views_auth as $data) { ?>
+  <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: <?= $data['bg'] ?>;">
+  <?php } ?>
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= $baseURL ?>views/">
@@ -69,4 +71,4 @@
       <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 
-</ul>
+  </ul>

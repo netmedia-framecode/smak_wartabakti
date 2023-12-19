@@ -52,9 +52,22 @@ require_once("../templates/views_top.php"); ?>
                 <td><?= $data['nomor_telepon'] ?></td>
                 <td><?= $data['asal_sekolah'] ?></td>
                 <td class="text-center">
-                  <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#formulir<?= $data['id_pendaftaran'] ?>">
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#formulir<?= $data['id_pendaftaran'] ?>">
                     <i class="bi bi-eye"></i> Berkas
                   </button>
+                  <?php if ($id_role == 1) {
+                    if ($data['status_pendaftaran'] == "Belum Diverifikasi" || $data['status_pendaftaran'] == "Belum Terverifikasi") { ?>
+                      <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ubah<?= $data['id_pendaftaran'] ?>">
+                        <i class="bi bi-check-all"></i> Verifikasi
+                      </button>
+                    <?php }
+                    if ($data['status_pendaftaran'] == "Belum Diverifikasi") { ?>
+                      <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#tambah<?= $data['id_pendaftaran'] ?>">
+                        <i class="bi bi-x-lg"></i> Verifikasi
+                      </button>
+                  <?php }
+                  } ?>
+
                   <div class="modal fade" id="formulir<?= $data['id_pendaftaran'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
@@ -64,15 +77,29 @@ require_once("../templates/views_top.php"); ?>
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
-                        <div class="modal-body">
-                          <embed src="<?= $baseURL ?>assets/files/pendaftaran/<?= $data['formulir'] ?>" type="application/pdf" width="100%" height="600px">
-                        </div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                          <input type="hidden" name="id_pendaftaran" value="<?= $data['id_pendaftaran'] ?>">
+                          <input type="hidden" name="formulirOld" value="<?= $data['formulir'] ?>">
+                          <div class="modal-body">
+                            <embed src="<?= $baseURL ?>assets/files/pendaftaran/<?= $data['formulir'] ?>" type="application/pdf" width="100%" height="600px">
+                            <?php if ($id_role == 3) { ?>
+                              <div class="form-group mt-3">
+                                <label for="formulir" class="form-label">Unggah Data Formulir</label>
+                                <input type="file" class="form-control" name="formulir" accept=".pdf" id="formulir" required>
+                                <small class="form-text text-muted">
+                                  Hanya file PDF yang diperbolehkan. Berkas yang dapat diunggah meliputi formulir, transkrip nilai, ijasah SMP, dan akte kelahiran.
+                                </small>
+                              </div>
+                          </div>
+                          <div class="modal-footer justify-content-center border-top-0">
+                            <button type="submit" name="edit_pendaftaran" class="btn btn-primary btn-sm">Upload</button>
+                          <?php } ?>
+                          </div>
+                        </form>
                       </div>
                     </div>
                   </div>
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ubah<?= $data['id_pendaftaran'] ?>">
-                    <i class="bi bi-check-all"></i> Verifikasi
-                  </button>
+
                   <div class="modal fade" id="ubah<?= $data['id_pendaftaran'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -86,6 +113,7 @@ require_once("../templates/views_top.php"); ?>
                           <input type="hidden" name="id_pendaftaran" value="<?= $data['id_pendaftaran'] ?>">
                           <input type="hidden" name="nama_lengkap" value="<?= $data['nama_lengkap'] ?>">
                           <input type="hidden" name="email" value="<?= $data['email'] ?>">
+                          <input type="hidden" name="password" value="<?= $data['password'] ?>">
                           <div class="modal-body">
                             <p>Jika data calon peserta didik baru telah sesuai silakan klik <strong>Verifikasi</strong> untuk masuk ke tahap seleksi.</p>
                             <div class="form-group">
@@ -100,6 +128,31 @@ require_once("../templates/views_top.php"); ?>
                       </div>
                     </div>
                   </div>
+
+                  <div class="modal fade" id="tambah<?= $data['id_pendaftaran'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header border-bottom-0 shadow">
+                          <h5 class="modal-title" id="exampleModalLabel"><?= $data['nama_lengkap'] ?></h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <form action="" method="post">
+                          <input type="hidden" name="id_pendaftaran" value="<?= $data['id_pendaftaran'] ?>">
+                          <input type="hidden" name="nama_lengkap" value="<?= $data['nama_lengkap'] ?>">
+                          <input type="hidden" name="email" value="<?= $data['email'] ?>">
+                          <div class="modal-body">
+                            <p>Jika data calon peserta didik baru tidak sesuai silakan klik <strong>Belum Terverifikasi</strong>.</p>
+                          </div>
+                          <div class="modal-footer justify-content-center border-top-0">
+                            <button type="submit" name="pendaftaran_belum_verifikasi" class="btn btn-danger btn-sm">Belum Terverifikasi</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
                 </td>
               </tr>
             <?php } ?>

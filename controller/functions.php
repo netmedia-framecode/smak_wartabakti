@@ -143,6 +143,22 @@ function komentar($conn, $data, $action)
 function pendaftaran($conn, $data, $action)
 {
   if ($action == "insert") {
+    $select_pendaftaran = "SELECT * FROM pendaftaran WHERE email='$data[email]'";
+    $take_pendaftaran = mysqli_query($conn, $select_pendaftaran);
+    if (mysqli_num_rows($take_pendaftaran) > 0) {
+      $message = "Maaf, email yang anda masukan sudah terdaftar.";
+      $messageType = "danger";
+      alert($message, $messageType);
+      return false;
+    }
+    $select_users = "SELECT * FROM users ORDER BY id_user DESC LIMIT 1";
+    $take_users = mysqli_query($conn, $select_users);
+    if (mysqli_num_rows($take_users) > 0) {
+      $row = mysqli_fetch_assoc($take_users);
+      $id_user = $row['id_user'] + 1;
+    } else {
+      $id_user = 1;
+    }
     $path = "assets/files/pendaftaran/";
     $fileName = basename($_FILES["formulir"]["name"]);
     $fileName = str_replace(" ", "-", $fileName);
@@ -283,10 +299,11 @@ function pendaftaran($conn, $data, $action)
       </body>
     </html>";
     smtp_mail($to, $subject, $message, "", "", 0, 0, true);
-    $sql = "INSERT INTO pendaftaran(nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, email, nomor_telepon, asal_sekolah, formulir) VALUES ('$data[nama_lengkap]', '$data[jenis_kelamin]', '$data[tanggal_lahir]', '$data[alamat]', '$data[email]', '$data[nomor_telepon]', '$data[asal_sekolah]', '$formulir')";
+    $sql = "INSERT INTO users(id_user,id_active,name,email) VALUES('$id_user','1','$data[nama_lengkap]','$data[email]');";
+    $sql .= "INSERT INTO pendaftaran(id_user, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, email, nomor_telepon, asal_sekolah, formulir) VALUES ('$id_user', '$data[nama_lengkap]', '$data[jenis_kelamin]', '$data[tanggal_lahir]', '$data[alamat]', '$data[email]', '$data[nomor_telepon]', '$data[asal_sekolah]', '$formulir');";
   }
 
-  mysqli_query($conn, $sql);
+  mysqli_multi_query($conn, $sql);
   return mysqli_affected_rows($conn);
 }
 
@@ -960,7 +977,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       } else if (empty($_FILE['image']["name"])) {
         $image = $data['imageOld'];
       }
-      $sql = "UPDATE auth SET image='$image'";
+      $sql = "UPDATE auth SET image='$image', bg='$data[bg]'";
     }
 
     mysqli_query($conn, $sql);
@@ -1446,7 +1463,9 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
 
   function pendaftaran_verifikasi($conn, $data, $action)
   {
-    if ($action == "update") {
+    if ($action == "insert") {
+      $password = generateRandomPassword(8);
+      $password_hash = password_hash($password, PASSWORD_DEFAULT);
       require_once("../controller/mail.php");
       $to       = $data['email'];
       $subject  = "Hasil Pendaftaran Peserta Didik Baru " . date("Y") . " - SMAK Wartabakti";
@@ -1530,7 +1549,204 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
                             <tr>
                             <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>
                                 <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;'>Hi " . $data['nama_lengkap'] . ",</p>
-                                <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Selamat kamu sudah terverifikasi sebagai peserta didik baru tahun " . date("Y") . ". Selanjutnya kamu akan mengikuti tahap ujian seleksi masuk pada tanggal <strong>" . $data['tanggal_seleksi'] . "</strong>, harap untuk menyiapkan diri sebaik mungkin agar dapat mengikuti ujian seleksi masuk.</p>
+                                <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Maaf kamu belum terverifikasi sebagai peserta didik baru tahun " . date("Y") . ". Silakan lakukan pembaharuan berkas formulir kamu dengan data login akun kamu sebagai berikut:</p>
+                                <table role='presentation' border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; min-width: 100%; width: 100%;' width='100%'>
+                                <tbody>
+                                    <tr>
+                                    <td align='left' style='font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;' valign='top'>
+                                        <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: auto; width: auto;'>
+                                        <tbody>
+                                            <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'>Email: " . $data['email'] . "</td>
+                                            </tr>
+                                            <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'>Password: " . $password . "</td>
+                                            </tr>
+                                        </tbody>
+                                        </table>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 30px;'>Terima kasih</p>
+                                <small>Peringatan! Ini adalah pesan otomatis sehingga Anda tidak dapat membalas pesan ini.</small>
+                            </td>
+                            </tr>
+                        </table>
+                        </td>
+                    </tr>
+        
+                    <!-- END MAIN CONTENT AREA -->
+                    </table>
+                    
+                    <!-- START FOOTER -->
+                    <div class='footer' style='clear: both; margin-top: 10px; text-align: center; width: 100%;'>
+                    <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; width: 100%;' width='100%'>
+                        <tr>
+                        <td class='content-block' style='font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #9a9ea6; font-size: 12px; text-align: center;' valign='top' align='center'>
+                            <span class='apple-link' style='color: #9a9ea6; font-size: 12px; text-align: center;'>Workarea Jln. S. K. Lerik, Kota Baru, Kupang, NTT, Indonesia. (0380) 8438423</span>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td class='content-block powered-by' style='font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #9a9ea6; font-size: 12px; text-align: center;' valign='top' align='center'>
+                            Powered by <a href='https://www.netmedia-framecode.com' style='color: #9a9ea6; font-size: 12px; text-align: center; text-decoration: none;'>Netmedia Framecode</a>.
+                        </td>
+                        </tr>
+                    </table>
+                    </div>
+                    <!-- END FOOTER -->
+        
+                <!-- END CENTERED WHITE CONTAINER -->
+                </div>
+                </td>
+                <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>&nbsp;</td>
+            </tr>
+            </table>
+        </body>
+      </html>";
+      smtp_mail($to, $subject, $message, "", "", 0, 0, true);
+      $sql = "UPDATE pendaftaran SET status_pendaftaran='Belum Terverifikasi' WHERE id_pendaftaran='$data[id_pendaftaran]';";
+      $sql .= "UPDATE users SET password='$password_hash' WHERE email='$data[email]';";
+    }
+
+    if ($action == "update") {
+      $password = generateRandomPassword(8);
+      $password_hash = password_hash($password, PASSWORD_DEFAULT);
+      require_once("../controller/mail.php");
+      $to       = $data['email'];
+      $subject  = "Hasil Pendaftaran Peserta Didik Baru " . date("Y") . " - SMAK Wartabakti";
+      $message  = "<!doctype html>
+      <html>
+        <head>
+            <meta name='viewport' content='width=device-width'>
+            <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+            <title>Hasil Pendaftaran Peserta Didik Baru " . date("Y") . "</title>
+            <style>
+                @media only screen and (max-width: 620px) {
+                    table[class='body'] h1 {
+                        font-size: 28px !important;
+                        margin-bottom: 10px !important;}
+                    table[class='body'] p,
+                    table[class='body'] ul,
+                    table[class='body'] ol,
+                    table[class='body'] td,
+                    table[class='body'] span,
+                    table[class='body'] a {
+                        font-size: 16px !important;}
+                    table[class='body'] .wrapper,
+                    table[class='body'] .article {
+                        padding: 10px !important;}
+                    table[class='body'] .content {
+                        padding: 0 !important;}
+                    table[class='body'] .container {
+                        padding: 0 !important;
+                        width: 100% !important;}
+                    table[class='body'] .main {
+                        border-left-width: 0 !important;
+                        border-radius: 0 !important;
+                        border-right-width: 0 !important;}
+                    table[class='body'] .btn table {
+                        width: 100% !important;}
+                    table[class='body'] .btn a {
+                        width: 100% !important;}
+                    table[class='body'] .img-responsive {
+                        height: auto !important;
+                        max-width: 100% !important;
+                        width: auto !important;}}
+                @media all {
+                    .ExternalClass {
+                        width: 100%;}
+                    .ExternalClass,
+                    .ExternalClass p,
+                    .ExternalClass span,
+                    .ExternalClass font,
+                    .ExternalClass td,
+                    .ExternalClass div {
+                        line-height: 100%;}
+                    .apple-link a {
+                        color: inherit !important;
+                        font-family: inherit !important;
+                        font-size: inherit !important;
+                        font-weight: inherit !important;
+                        line-height: inherit !important;
+                        text-decoration: none !important;
+                    .btn-primary table td:hover {
+                        background-color: #d5075d !important;}
+                    .btn-primary a:hover {
+                        background-color: #000 !important;
+                        border-color: #000 !important;
+                        color: #fff !important;}}
+            </style>
+        </head>
+        <body class style='background-color: #e1e3e5; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;'>
+            <table role='presentation' border='0' cellpadding='0' cellspacing='0' class='body' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; background-color: #e1e3e5; width: 100%;' width='100%' bgcolor='#e1e3e5'>
+            <tr>
+                <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>&nbsp;</td>
+                <td class='container' style='font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; max-width: 580px; padding: 10px; width: 580px; margin: 0 auto;' width='580' valign='top'>
+                <div class='content' style='box-sizing: border-box; display: block; margin: 0 auto; max-width: 580px; padding: 10px;'>
+        
+                    <!-- START CENTERED WHITE CONTAINER -->
+                    <table role='presentation' class='main' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; background: #ffffff; border-radius: 3px; width: 100%;' width='100%'>
+        
+                    <!-- START MAIN CONTENT AREA -->
+                    <tr>
+                        <td class='wrapper' style='font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;' valign='top'>
+                        <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; width: 100%;' width='100%'>
+                            <tr>
+                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>
+                                <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;'>Hi " . $data['nama_lengkap'] . ",</p>
+                                <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Selamat kamu sudah terverifikasi sebagai peserta didik baru tahun " . date("Y") . ". Selanjutnya kamu akan mengikuti tahap ujian seleksi masuk dengan jadwal sebagai berikut:</p>
+                                <table role='presentation' border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; min-width: 100%; width: 100%;' width='100%'>
+                                <tbody>
+                                    <tr>
+                                    <td align='left' style='font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;' valign='top'>
+                                        <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: auto; width: auto;'>
+                                        <tbody>
+                                          <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;width: 100px;' valign='top' bgcolor='#ffffff' align='left'>Lokasi Ujian</td>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'> : </td>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'><strong>SMA Swasta Katholik Warta Bakti, JL. ACHMAD YANI KEFAMENANU, Kel. Kefamenanu Selatan, Kec. Kota Kefamenanu, Kab. Timor Tengah Utara, Prov. Nusa Tenggara Timur</strong></td>
+                                          </tr>
+                                          <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;width: 100px;' valign='top' bgcolor='#ffffff' align='left'>Tanggal :</td>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'> : </td>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'><strong>" . $data['tanggal_seleksi'] . "</strong></td>
+                                          </tr>
+                                          <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;width: 100px;' valign='top' bgcolor='#ffffff' align='left'>Jam : </td>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'> : </td>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'><strong>07:30 WITA</strong></td>
+                                          </tr>
+                                        </tbody>
+                                        </table>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                                </table>";
+      if (empty($data['password'])) {
+        $message .= "<p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Untuk melihat data pendaftaran dan hasil seleksi kamu bisa login pada akun yang telah kami buat menggunakan email yang kamu daftarkan, berikut akunnya:</p>
+                                <table role='presentation' border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; min-width: 100%; width: 100%;' width='100%'>
+                                <tbody>
+                                    <tr>
+                                    <td align='left' style='font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;' valign='top'>
+                                        <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: auto; width: auto;'>
+                                        <tbody>
+                                            <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'>Email: " . $data['email'] . "</td>
+                                            </tr>
+                                            <tr>
+                                            <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'>Password: " . $password . "</td>
+                                            </tr>
+                                        </tbody>
+                                        </table>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                                </table>";
+      } else {
+        $message .= "<p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 30px;'>Untuk melihat data pendaftaran dan hasil seleksi kamu bisa login pada akun yang telah kami buat menggunakan email yang kamu daftarkan.</p>";
+      }
+      $message .= "<p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 30px;'>Harap untuk menyiapkan diri sebaik mungkin agar dapat mengikuti ujian seleksi masuk.</p>
                                 <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 30px;'>Terima kasih</p>
                                 <small>Peringatan! Ini adalah pesan otomatis sehingga Anda tidak dapat membalas pesan ini.</small>
                             </td>
@@ -1570,6 +1786,33 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       smtp_mail($to, $subject, $message, "", "", 0, 0, true);
       $sql = "UPDATE pendaftaran SET status_pendaftaran='Diverifikasi' WHERE id_pendaftaran='$data[id_pendaftaran]';";
       $sql .= "INSERT INTO hasil_seleksi(id_pendaftaran,tanggal_seleksi) VALUES('$data[id_pendaftaran]','$data[tanggal_seleksi]');";
+      if (empty($data['password'])) {
+        $sql .= "UPDATE users SET password='$password_hash' WHERE email='$data[email]';";
+      }
+    }
+
+    if ($action == "update_peserta") {
+      $path = "../assets/files/pendaftaran/";
+      $fileName = basename($_FILES["formulir"]["name"]);
+      $fileName = str_replace(" ", "-", $fileName);
+      $fileNameEncrypt = crc32($fileName);
+      $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+      $imageUploadPath = $path . $fileNameEncrypt . "." . $fileExtension;
+      $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+      $allowedTypes = array('pdf');
+
+      if (in_array($fileType, $allowedTypes)) {
+        unlink($path . $data['formulirOld']);
+        compressFile($_FILES["formulir"]["tmp_name"], $imageUploadPath);
+        $formulir = $fileNameEncrypt . "." . $fileExtension;
+      } else {
+        $message = "Maaf, hanya file PDF yang diizinkan.";
+        $messageType = "danger";
+        alert($message, $messageType);
+        return false;
+      }
+
+      $sql = "UPDATE pendaftaran SET formulir='$formulir', status_pendaftaran='Belum Diverifikasi' WHERE id_pendaftaran='$data[id_pendaftaran]';";
     }
 
     mysqli_multi_query($conn, $sql);
@@ -1579,28 +1822,142 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
   function hasil_seleksi($conn, $data, $action)
   {
     if ($action == "update") {
-      $select_users = "SELECT * FROM users ORDER BY id_user DESC LIMIT 1";
-      $take_users = mysqli_query($conn, $select_users);
-      if (mysqli_num_rows($take_users) > 0) {
-        $row = mysqli_fetch_assoc($take_users);
-        $id_user = $row['id_user'] + 1;
-      } else {
-        $id_user = 1;
-      }
       $select_biaya_pembayaran = "SELECT * FROM biaya_pembayaran";
       $take_biaya_pembayaran = mysqli_query($conn, $select_biaya_pembayaran);
       $total_biaya = 0;
-      $password = generateRandomPassword(8);
-      $password_hash = password_hash($password, PASSWORD_DEFAULT);
       $order_id = generateOrderId();
       $bobotUjian = 60;
       $bobotRapor = 40;
       $nilaiTotal = ($data['nilai_ujian'] * $bobotUjian / 100) + ($data['nilai_rapor'] * $bobotRapor / 100);
       if ($nilaiTotal < 75) {
         $status_lulus = "Belum Lulus";
+        require_once("../controller/mail.php");
+        $to       = $data['email'];
+        $subject  = "Hasil Seleksi Peserta Didik Baru " . date("Y") . " - SMAK Wartabakti";
+        $message  = "<!doctype html>
+        <html>
+          <head>
+              <meta name='viewport' content='width=device-width'>
+              <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+              <title>Hasil Seleksi Peserta Didik Baru " . date("Y") . "</title>
+              <style>
+                  @media only screen and (max-width: 620px) {
+                      table[class='body'] h1 {
+                          font-size: 28px !important;
+                          margin-bottom: 10px !important;}
+                      table[class='body'] p,
+                      table[class='body'] ul,
+                      table[class='body'] ol,
+                      table[class='body'] td,
+                      table[class='body'] span,
+                      table[class='body'] a {
+                          font-size: 16px !important;}
+                      table[class='body'] .wrapper,
+                      table[class='body'] .article {
+                          padding: 10px !important;}
+                      table[class='body'] .content {
+                          padding: 0 !important;}
+                      table[class='body'] .container {
+                          padding: 0 !important;
+                          width: 100% !important;}
+                      table[class='body'] .main {
+                          border-left-width: 0 !important;
+                          border-radius: 0 !important;
+                          border-right-width: 0 !important;}
+                      table[class='body'] .btn table {
+                          width: 100% !important;}
+                      table[class='body'] .btn a {
+                          width: 100% !important;}
+                      table[class='body'] .img-responsive {
+                          height: auto !important;
+                          max-width: 100% !important;
+                          width: auto !important;}}
+                  @media all {
+                      .ExternalClass {
+                          width: 100%;}
+                      .ExternalClass,
+                      .ExternalClass p,
+                      .ExternalClass span,
+                      .ExternalClass font,
+                      .ExternalClass td,
+                      .ExternalClass div {
+                          line-height: 100%;}
+                      .apple-link a {
+                          color: inherit !important;
+                          font-family: inherit !important;
+                          font-size: inherit !important;
+                          font-weight: inherit !important;
+                          line-height: inherit !important;
+                          text-decoration: none !important;
+                      .btn-primary table td:hover {
+                          background-color: #d5075d !important;}
+                      .btn-primary a:hover {
+                          background-color: #000 !important;
+                          border-color: #000 !important;
+                          color: #fff !important;}}
+              </style>
+          </head>
+          <body class style='background-color: #e1e3e5; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;'>
+              <table role='presentation' border='0' cellpadding='0' cellspacing='0' class='body' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; background-color: #e1e3e5; width: 100%;' width='100%' bgcolor='#e1e3e5'>
+              <tr>
+                  <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>&nbsp;</td>
+                  <td class='container' style='font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; max-width: 580px; padding: 10px; width: 580px; margin: 0 auto;' width='580' valign='top'>
+                  <div class='content' style='box-sizing: border-box; display: block; margin: 0 auto; max-width: 580px; padding: 10px;'>
+          
+                      <!-- START CENTERED WHITE CONTAINER -->
+                      <table role='presentation' class='main' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; background: #ffffff; border-radius: 3px; width: 100%;' width='100%'>
+          
+                      <!-- START MAIN CONTENT AREA -->
+                      <tr>
+                          <td class='wrapper' style='font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;' valign='top'>
+                          <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; width: 100%;' width='100%'>
+                              <tr>
+                              <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>
+                                  <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;'>Hi " . $data['nama_lengkap'] . ",</p>
+                                  <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Selamat kamu berhasil menyelesaikan ujian seleksi dengan baik namum kamu belum berhasil dan dinyatakan <strong>TIDAK LULUS</strong> sebagai peserta didik baru tahun " . date("Y") . ". Terima kasih sudah bersedia mengikuti seleksi masuk di SMA Swasta Katholik Warta Bakti Kefamenanu.</p>
+                                  <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 30px;'>Terima kasih</p>
+                                  <small>Peringatan! Ini adalah pesan otomatis sehingga Anda tidak dapat membalas pesan ini.</small>
+                              </td>
+                              </tr>
+                          </table>
+                          </td>
+                      </tr>
+          
+                      <!-- END MAIN CONTENT AREA -->
+                      </table>
+                      
+                      <!-- START FOOTER -->
+                      <div class='footer' style='clear: both; margin-top: 10px; text-align: center; width: 100%;'>
+                      <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; width: 100%;' width='100%'>
+                          <tr>
+                          <td class='content-block' style='font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #9a9ea6; font-size: 12px; text-align: center;' valign='top' align='center'>
+                              <span class='apple-link' style='color: #9a9ea6; font-size: 12px; text-align: center;'>Workarea Jln. S. K. Lerik, Kota Baru, Kupang, NTT, Indonesia. (0380) 8438423</span>
+                          </td>
+                          </tr>
+                          <tr>
+                          <td class='content-block powered-by' style='font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #9a9ea6; font-size: 12px; text-align: center;' valign='top' align='center'>
+                              Powered by <a href='https://www.netmedia-framecode.com' style='color: #9a9ea6; font-size: 12px; text-align: center; text-decoration: none;'>Netmedia Framecode</a>.
+                          </td>
+                          </tr>
+                      </table>
+                      </div>
+                      <!-- END FOOTER -->
+          
+                  <!-- END CENTERED WHITE CONTAINER -->
+                  </div>
+                  </td>
+                  <td style='font-family: sans-serif; font-size: 14px; vertical-align: top;' valign='top'>&nbsp;</td>
+              </tr>
+              </table>
+          </body>
+        </html>";
+        smtp_mail($to, $subject, $message, "", "", 0, 0, true);
         $sql = "UPDATE hasil_seleksi SET nilai_ujian='$data[nilai_ujian]', nilai_rapor='$data[nilai_rapor]', nilai_total='$nilaiTotal', keterangan='$data[keterangan]', tanggal_hasil=current_timestamp, status_lulus='$status_lulus' WHERE id_hasil_seleksi='$data[id_hasil_seleksi]';";
       } else if ($nilaiTotal >= 75) {
         $status_lulus = "Lulus";
+        $waktuSaatIni = time();
+        $waktuBatas = $waktuSaatIni + (24 * 60 * 60);
+        $formatWaktu = date("Y-m-d H:i:s", $waktuBatas);
         require_once("../controller/mail.php");
         $to       = $data['email'];
         $subject  = "Hasil Seleksi Peserta Didik Baru " . date("Y") . " - SMAK Wartabakti";
@@ -1708,25 +2065,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
                                       </tr>
                                   </tbody>
                                   </table>
-                                  <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Untuk melakukan pembayaran kamu bisa login pada akun yang telah kami buat menggunakan email yang kamu daftarkan, berikut akunnya:</p>
-                                  <table role='presentation' border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; min-width: 100%; width: 100%;' width='100%'>
-                                  <tbody>
-                                      <tr>
-                                      <td align='left' style='font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;' valign='top'>
-                                          <table role='presentation' border='0' cellpadding='0' cellspacing='0' style='border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: auto; width: auto;'>
-                                          <tbody>
-                                              <tr>
-                                              <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'>Email: " . $data['email'] . "</td>
-                                              </tr>
-                                              <tr>
-                                              <td style='font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #ffffff; border-radius: 5px; text-align: left; font-weight: bold;' valign='top' bgcolor='#ffffff' align='left'>Password: " . $password . "</td>
-                                              </tr>
-                                          </tbody>
-                                          </table>
-                                      </td>
-                                      </tr>
-                                  </tbody>
-                                  </table>
+                                  <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 20px;'>Untuk melakukan pembayaran kamu bisa login pada akun yang telah kami buat sebelumnya. Batas waktu pembayaran kamu sampai dengan <strong>" . $formatWaktu . "</strong>, apabila pembayaran belum dinyatan Lunas maka akan dianggap hangus dan anda perlu melapor kembali ke bagian administrasi sekolah.</p>
                                   <p style='font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 30px;'>Terima kasih</p>
                                   <small>Peringatan! Ini adalah pesan otomatis sehingga Anda tidak dapat membalas pesan ini.</small>
                               </td>
@@ -1765,8 +2104,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
         </html>";
         smtp_mail($to, $subject, $message, "", "", 0, 0, true);
         $sql = "UPDATE hasil_seleksi SET nilai_ujian='$data[nilai_ujian]', nilai_rapor='$data[nilai_rapor]', nilai_total='$nilaiTotal', keterangan='$data[keterangan]', tanggal_hasil=current_timestamp, status_lulus='$status_lulus' WHERE id_hasil_seleksi='$data[id_hasil_seleksi]';";
-        $sql .= "INSERT INTO users(id_user,id_active,name,email,password) VALUES('$id_user','1','$data[nama_lengkap]','$data[email]','$password_hash');";
-        $sql .= "INSERT INTO pembayaran(id_hasil_seleksi,id_user,order_id,jumlah_pembayaran) VALUES('$data[id_hasil_seleksi]','$id_user','$order_id','$total_biaya');";
+        $sql .= "INSERT INTO pembayaran(id_hasil_seleksi,order_id,jumlah_pembayaran,batas_pembayaran) VALUES('$data[id_hasil_seleksi]','$order_id','$total_biaya','$formatWaktu');";
       }
     }
 
@@ -1786,6 +2124,69 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
 
     if ($action == "delete") {
       $sql = "DELETE FROM biaya_pembayaran WHERE id_biaya='$data[id_biaya]'";
+    }
+
+    mysqli_query($conn, $sql);
+    return mysqli_affected_rows($conn);
+  }
+
+  function guru($conn, $data, $action)
+  {
+    if ($action == "insert") {
+      $sql = "INSERT INTO guru(nama_lengkap,nik,jk,tempat_lahir,tgl_lahir) VALUES('$data[nama_lengkap]','$data[nik]','$data[jk]','$data[tempat_lahir]','$data[tgl_lahir]')";
+    }
+
+    if ($action == "update") {
+      $sql = "UPDATE guru SET nama_lengkap='$data[nama_lengkap]', nik='$data[nik]', jk='$data[jk]', tempat_lahir='$data[tempat_lahir]', tgl_lahir='$data[tgl_lahir]' WHERE id_guru='$data[id_guru]'";
+    }
+
+    if ($action == "delete") {
+      $sql = "DELETE FROM guru WHERE id_guru='$data[id_guru]'";
+    }
+
+    mysqli_query($conn, $sql);
+    return mysqli_affected_rows($conn);
+  }
+
+  function ekstrakulikuler($conn, $data, $action)
+  {
+    $path = "../assets/img/ekstrakulikuler/";
+
+    if ($action == "insert") {
+      $fileName = basename($_FILES["img"]["name"]);
+      $fileName = str_replace(" ", "-", $fileName);
+      $fileName_encrypt = crc32($fileName);
+      $ekstensiGambar = explode('.', $fileName);
+      $ekstensiGambar = strtolower(end($ekstensiGambar));
+      $imageUploadPath = $path . $fileName_encrypt . "." . $ekstensiGambar;
+      $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+      $allowTypes = array('jpg', 'png', 'jpeg');
+      if (in_array($fileType, $allowTypes)) {
+        $imageTemp = $_FILES["img"]["tmp_name"];
+        compressImage($imageTemp, $imageUploadPath, 75);
+        $img = $fileName_encrypt . "." . $ekstensiGambar;
+      } else {
+        $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+        $message_type = "danger";
+        alert($message, $message_type);
+        return false;
+      }
+      mysqli_query($conn, "INSERT INTO ekstrakulikuler(img,deskripsi) VALUES('$img','$data[deskripsii]')");
+    }
+
+    if ($action == "delete") {
+      unlink($path . $data['img']);
+      $sql = "DELETE FROM ekstrakulikuler WHERE id='$data[id]'";
+      mysqli_query($conn, $sql);
+    }
+
+    return mysqli_affected_rows($conn);
+  }
+
+  function sejarah($conn, $data, $action)
+  {
+    if ($action == "update") {
+      $sql = "UPDATE sejarah SET deskripsi='$data[deskripsi]'";
     }
 
     mysqli_query($conn, $sql);

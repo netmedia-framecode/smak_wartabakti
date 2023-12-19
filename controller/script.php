@@ -38,6 +38,14 @@ $select_galeri = "SELECT * FROM galeri ORDER BY id_galeri DESC";
 $views_galeri = mysqli_query($conn, $select_galeri);
 $select_formulir = "SELECT * FROM formulir";
 $views_formulir = mysqli_query($conn, $select_formulir);
+$select_hasil_seleksi = "SELECT * FROM hasil_seleksi JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran ORDER BY hasil_seleksi.id_hasil_seleksi ASC";
+$views_hasil_seleksi = mysqli_query($conn, $select_hasil_seleksi);
+$select_guru_visit = "SELECT * FROM guru";
+$views_guru_visit = mysqli_query($conn, $select_guru_visit);
+$select_ekstrakulikuler_visit = "SELECT * FROM ekstrakulikuler";
+$views_ekstrakulikuler_visit = mysqli_query($conn, $select_ekstrakulikuler_visit);
+$select_sejarah = "SELECT * FROM sejarah";
+$views_sejarah = mysqli_query($conn, $select_sejarah);
 
 if (isset($_POST["kontak"])) {
   $validated_post = array_map(function ($value) use ($conn) {
@@ -165,6 +173,21 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
     }
     unset($_SESSION["project_smak_wartabakti"]["users"]["time_message"]);
   }
+
+  $select_count_users = "SELECT * FROM users";
+  $count_users = mysqli_query($conn, $select_count_users);
+  $counts_users = mysqli_num_rows($count_users);
+  $select_count_pendaftaran = "SELECT * FROM pendaftaran WHERE status_pendaftaran='Belum Diverifikasi'";
+  $count_pendaftaran = mysqli_query($conn, $select_count_pendaftaran);
+  $counts_pendaftaran = mysqli_num_rows($count_pendaftaran);
+  $select_count_hasil_seleksi = "SELECT * FROM hasil_seleksi";
+  $count_hasil_seleksi = mysqli_query($conn, $select_count_hasil_seleksi);
+  $counts_hasil_seleksi = mysqli_num_rows($count_hasil_seleksi);
+  $select_count_pembayaran = "SELECT * FROM pembayaran";
+  $count_pembayaran = mysqli_query($conn, $select_count_pembayaran);
+  $counts_pembayaran = mysqli_num_rows($count_pembayaran);
+
+
   $select_profile = "SELECT users.*, user_role.role, user_status.status 
                       FROM users
                       JOIN user_role ON users.id_role=user_role.id_role 
@@ -180,9 +203,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Profil Anda berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: profil");
       exit();
     }
   }
@@ -194,9 +215,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Setting pada system login berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: setting");
       exit();
     }
   }
@@ -205,6 +224,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
                     FROM users
                     JOIN user_role ON users.id_role=user_role.id_role 
                     JOIN user_status ON users.id_active=user_status.id_status
+                    WHERE users.id_user!='$id_user'
                   ";
   $views_users = mysqli_query($conn, $select_users);
   $select_user_role = "SELECT * FROM user_role";
@@ -217,9 +237,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "data users berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: users");
       exit();
     }
   }
@@ -231,9 +249,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Role baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: role");
       exit();
     }
   }
@@ -245,9 +261,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Role " . $_POST['roleOld'] . " berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: role");
       exit();
     }
   }
@@ -259,9 +273,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Role " . $_POST['role'] . " berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: role");
       exit();
     }
   }
@@ -279,9 +291,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Menu baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: menu");
       exit();
     }
   }
@@ -293,9 +303,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Menu " . $_POST['menuOld'] . " berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: menu");
       exit();
     }
   }
@@ -307,9 +315,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Menu " . $_POST['menu'] . " berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: menu");
       exit();
     }
   }
@@ -333,9 +339,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Sub Menu baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: sub-menu");
       exit();
     }
   }
@@ -347,9 +351,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Sub Menu " . $_POST['titleOld'] . " berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: sub-menu");
       exit();
     }
   }
@@ -361,9 +363,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Sub Menu " . $_POST['title'] . " berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: sub-menu");
       exit();
     }
   }
@@ -387,9 +387,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Akses ke menu berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: menu-access");
       exit();
     }
   }
@@ -401,9 +399,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Akses menu " . $_POST['menu'] . " berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: menu-access");
       exit();
     }
   }
@@ -415,9 +411,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Akses menu " . $_POST['menu'] . " berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: menu-access");
       exit();
     }
   }
@@ -441,9 +435,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Akses ke sub menu berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: sub-menu-access");
       exit();
     }
   }
@@ -455,9 +447,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Akses sub menu " . $_POST['title'] . " berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: sub-menu-access");
       exit();
     }
   }
@@ -469,9 +459,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Akses sub menu " . $_POST['title'] . " berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: sub-menu-access");
       exit();
     }
   }
@@ -484,9 +472,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Section header berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -498,9 +484,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section carousel berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -512,9 +496,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section carousel berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -526,9 +508,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section carousel berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -540,9 +520,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section FAQ berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -554,9 +532,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section FAQ berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -568,9 +544,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section FAQ berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -585,9 +559,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data section kontak berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: beranda");
       exit();
     }
   }
@@ -599,9 +571,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data profil berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: profil");
       exit();
     }
   }
@@ -613,9 +583,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data visi misi berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: visi-misi");
       exit();
     }
   }
@@ -628,9 +596,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Nama kategori berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: kategori");
       exit();
     }
   }
@@ -642,9 +608,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Nama kategori berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: kategori");
       exit();
     }
   }
@@ -656,9 +620,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Nama kategori berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: kategori");
       exit();
     }
   }
@@ -677,9 +639,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Berita baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: list-berita");
       exit();
     }
   }
@@ -691,9 +651,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Berita berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: list-berita");
       exit();
     }
   }
@@ -705,9 +663,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Berita berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: list-berita");
       exit();
     }
   }
@@ -720,9 +676,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Pengumuman baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: list-pengumuman");
       exit();
     }
   }
@@ -734,9 +688,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Pengumuman berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: list-pengumuman");
       exit();
     }
   }
@@ -748,9 +700,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Pengumuman berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: list-pengumuman");
       exit();
     }
   }
@@ -760,9 +710,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Gambar baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: galeri");
       exit();
     }
   }
@@ -774,9 +722,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Gambar berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: galeri");
       exit();
     }
   }
@@ -789,14 +735,16 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Formulir baru berhasil unggah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: formulir");
       exit();
     }
   }
 
-  $select_pendaftaran = "SELECT * FROM pendaftaran WHERE status_pendaftaran='Belum Diverifikasi' ORDER BY id_pendaftaran ASC";
+  if ($id_role <= 2) {
+    $select_pendaftaran = "SELECT pendaftaran.*, users.password FROM pendaftaran JOIN users ON pendaftaran.id_user=users.id_user WHERE pendaftaran.status_pendaftaran='Belum Diverifikasi' OR pendaftaran.status_pendaftaran='Belum Terverifikasi' ORDER BY pendaftaran.id_pendaftaran ASC";
+  } else {
+    $select_pendaftaran = "SELECT * FROM pendaftaran WHERE id_user='$id_user' ORDER BY id_pendaftaran ASC";
+  }
   $views_pendaftaran = mysqli_query($conn, $select_pendaftaran);
   if (isset($_POST["pendaftaran_verifikasi"])) {
     $validated_post = array_map(function ($value) use ($conn) {
@@ -806,15 +754,35 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data peserta didik baru telah berhasil di verifikasi.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: pendaftaran");
+      exit();
+    }
+  }
+  if (isset($_POST["pendaftaran_belum_verifikasi"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (pendaftaran_verifikasi($conn, $validated_post, $action = 'insert') > 0) {
+      $message = "Status data peserta didik baru berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: pendaftaran");
+      exit();
+    }
+  }
+  if (isset($_POST["edit_pendaftaran"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (pendaftaran_verifikasi($conn, $validated_post, $action = 'update_peserta') > 0) {
+      $message = "Data formulir kamu telah berhasil diupload.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: pendaftaran");
       exit();
     }
   }
 
-  $select_hasil_seleksi = "SELECT * FROM hasil_seleksi JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran ORDER BY hasil_seleksi.id_hasil_seleksi ASC";
-  $views_hasil_seleksi = mysqli_query($conn, $select_hasil_seleksi);
   if (isset($_POST["hasil_seleksi"])) {
     $validated_post = array_map(function ($value) use ($conn) {
       return valid($conn, $value);
@@ -823,16 +791,12 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Data peserta didik baru telah berhasil di seleksi.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: hasil-seleksi");
       exit();
     }
   }
 
-  $select_biaya_pembayaran = "SELECT * 
-                    FROM biaya_pembayaran 
-                  ";
+  $select_biaya_pembayaran = "SELECT * FROM biaya_pembayaran";
   $views_biaya_pembayaran = mysqli_query($conn, $select_biaya_pembayaran);
   if (isset($_POST["add_biaya_pembayaran"])) {
     $validated_post = array_map(function ($value) use ($conn) {
@@ -842,9 +806,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Biaya pembayaran baru berhasil ditambahkan.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: pembayaran");
       exit();
     }
   }
@@ -856,9 +818,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Biaya pembayaran berhasil diubah.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: pembayaran");
       exit();
     }
   }
@@ -870,9 +830,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message = "Biaya pembayaran berhasil dihapus.";
       $message_type = "success";
       alert($message, $message_type);
-      $to_page = strtolower($_SESSION["project_smak_wartabakti"]["name_page"]);
-      $to_page = str_replace(" ", "-", $to_page);
-      header("Location: $to_page");
+      header("Location: pembayaran");
       exit();
     }
   }
@@ -882,7 +840,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
                     FROM pembayaran 
                     JOIN hasil_seleksi ON pembayaran.id_hasil_seleksi=hasil_seleksi.id_hasil_seleksi
                     JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran
-                    JOIN users ON pembayaran.id_user=users.id_user
+                    JOIN users ON pendaftaran.id_user=users.id_user
                     ORDER BY pembayaran.id_pembayaran DESC
                   ";
   } else {
@@ -890,15 +848,100 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
                     FROM pembayaran 
                     JOIN hasil_seleksi ON pembayaran.id_hasil_seleksi=hasil_seleksi.id_hasil_seleksi
                     JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran
-                    JOIN users ON pembayaran.id_user=users.id_user
-                    WHERE pembayaran.id_user='$id_user'
+                    JOIN users ON pendaftaran.id_user=users.id_user
+                    WHERE pendaftaran.id_user='$id_user'
                     ORDER BY pembayaran.id_pembayaran DESC
                   ";
   }
   $views_pembayaran = mysqli_query($conn, $select_pembayaran);
   if (isset($_POST["add_pembayaran"])) {
-    $order_id = $_POST['order_id'];
-    header("Location: " . $baseURL . "views/payment/examples/snap/checkout?order_id=$order_id");
-    exit();
+    $waktuBatasPembayaran = strtotime($_POST['batas_pembayaran']);
+    $waktuSaatIni = time();
+    if ($waktuSaatIni > $waktuBatasPembayaran) {
+      $message = "Maaf, batas pembayaran telah lewat. Silakan hubungi bagian administrasi untuk bantuan lebih lanjut.";
+      $message_type = "danger";
+      alert($message, $message_type);
+      return false;
+    } else {
+      $order_id = $_POST['order_id'];
+      header("Location: " . $baseURL . "views/payment/examples/snap/checkout?order_id=$order_id");
+      exit();
+    }
+  }
+
+  $select_guru = "SELECT * FROM guru";
+  $views_guru = mysqli_query($conn, $select_guru);
+  if (isset($_POST["add_guru"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (guru($conn, $validated_post, $action = 'insert') > 0) {
+      $message = "Data guru baru berhasil ditambahkan.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: guru");
+      exit();
+    }
+  }
+  if (isset($_POST["edit_guru"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (guru($conn, $validated_post, $action = 'update') > 0) {
+      $message = "Data guru berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: guru");
+      exit();
+    }
+  }
+  if (isset($_POST["delete_guru"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (guru($conn, $validated_post, $action = 'delete') > 0) {
+      $message = "Data guru berhasil dihapus.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: guru");
+      exit();
+    }
+  }
+
+  $select_ekstrakulikuler = "SELECT * FROM ekstrakulikuler";
+  $views_ekstrakulikuler = mysqli_query($conn, $select_ekstrakulikuler);
+  if (isset($_POST["add_ekstrakulikuler"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (ekstrakulikuler($conn, $validated_post, $action = 'insert') > 0) {
+      $message = "Data ekstrakulikuler baru berhasil ditambahkan.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: ekstrakulikuler");
+      exit();
+    }
+  }
+  if (isset($_POST["delete_ekstrakulikuler"])) {
+    $validated_post = array_map(function ($value) use ($conn) {
+      return valid($conn, $value);
+    }, $_POST);
+    if (ekstrakulikuler($conn, $validated_post, $action = 'delete') > 0) {
+      $message = "Data ekstrakulikuler berhasil dihapus.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: ekstrakulikuler");
+      exit();
+    }
+  }
+
+  if (isset($_POST["edit_sejarah"])) {
+    if (sejarah($conn, $_POST, $action = 'update') > 0) {
+      $message = "Data sejarah berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: sejarah");
+      exit();
+    }
   }
 }

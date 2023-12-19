@@ -52,7 +52,58 @@ require_once("templates/top.php"); ?>
       <div class="col-lg-8 mb-4">
         <div class="meeting-single-item">
           <div class="down-content rounded-0">
-
+            <div class="table-responsive">
+              <table class="table table-striped" id="dataTable">
+                <thead>
+                  <tr>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Nama Lengkap</th>
+                    <th class="text-center">Jenis Kelamin</th>
+                    <th class="text-center">Tgl Lahir</th>
+                    <th class="text-center">Alamat</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">No. Telp</th>
+                    <th class="text-center">Asal Sekolah</th>
+                    <th class="text-center">Tgl Seleksi</th>
+                    <th class="text-center">Tgl Hasil</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Nama Lengkap</th>
+                    <th class="text-center">Jenis Kelamin</th>
+                    <th class="text-center">Tgl Lahir</th>
+                    <th class="text-center">Alamat</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">No. Telp</th>
+                    <th class="text-center">Asal Sekolah</th>
+                    <th class="text-center">Tgl Seleksi</th>
+                    <th class="text-center">Tgl Hasil</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <?php foreach ($views_hasil_seleksi as $data) { ?>
+                    <tr>
+                      <td><?= $data['status_lulus'] ?></td>
+                      <td><?= $data['nama_lengkap'] ?></td>
+                      <td><?= $data['jenis_kelamin'] ?></td>
+                      <td><?= $data['tanggal_lahir'] ?></td>
+                      <td><?= $data['alamat'] ?></td>
+                      <td><?= $data['email'] ?></td>
+                      <td><?= $data['nomor_telepon'] ?></td>
+                      <td><?= $data['asal_sekolah'] ?></td>
+                      <td><?php $tanggal_seleksi = date_create($data["tanggal_seleksi"]);
+                          echo date_format($tanggal_seleksi, "d M Y"); ?></td>
+                      <td><?php if ($data["tanggal_hasil"] !== NULL) {
+                            $tanggal_hasil = date_create($data["tanggal_hasil"]);
+                            echo date_format($tanggal_hasil, "d M Y");
+                          } ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

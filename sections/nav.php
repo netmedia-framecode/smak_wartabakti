@@ -2,7 +2,11 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-6 col-sm-6">
-        <div class="left-content">
+        <div class="right-icons" style="text-align: left;">
+          <ul>
+            <li><a href="https://www.facebook.com/smaskwartabakti?mibextid=YimQGvt8cm5a3TS7" target="_blank"><i class="fa fa-facebook"></i> Facebook</a></li>
+            <li><a href="https://www.youtube.com/@smaskatolikwartabaktikefam6898?si=r8u9ck9m7z8nhihw" target="_blank"><i class="fa fa-youtube-play"></i> Youtube</a></li>
+          </ul>
         </div>
       </div>
       <div class="col-lg-6 col-sm-6">
@@ -61,11 +65,19 @@
           <!-- ***** Menu Start ***** -->
           <ul class="nav">
             <li><a href="./">Beranda</a></li>
-            <li><a href="profil">Profil</a></li>
-            <li><a href="visi-misi">Visi Misi</a></li>
+            <li class="has-sub">
+              <a href="javascript:void(0)">Profil</a>
+              <ul class="sub-menu" style="width: 250px;">
+                <li><a href="profil">Profil</a></li>
+                <li><a href="visi-misi">Visi Misi</a></li>
+                <li><a href="prestasi">Prestasi</a></li>
+                <li><a href="guru">Data Guru</a></li>
+                <li><a href="kegiatan-ekstrakulikuler">Kegiatan Ekstrakulikuler</a></li>
+              </ul>
+            </li>
             <li class="has-sub">
               <a href="javascript:void(0)">Berita</a>
-              <ul class="sub-menu">
+              <ul class="sub-menu" style="width: 250px;">
                 <li><a href="berita">Semua Berita</a></li>
                 <?php foreach ($views_kategori_berita as $data) : ?>
                   <li><a href="berita?kategori=<?= $data['slug'] ?>"><?= $data['nama_kategori'] ?></a></li>

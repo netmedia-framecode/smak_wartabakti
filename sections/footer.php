@@ -17,6 +17,9 @@
 <script src="<?= $baseURL ?>assets/js/video.js"></script>
 <script src="<?= $baseURL ?>assets/js/slick-slider.js"></script>
 <script src="<?= $baseURL ?>assets/js/custom.js"></script>
+<script src="<?= $baseURL ?>assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Page level custom scripts -->
+<script src="<?= $baseURL ?>assets/js/demo/datatables-demo.js"></script>
 <script>
   //according to loftblog tut
   $('.nav li:first').addClass('active');
@@ -66,18 +69,18 @@
 </script>
 
 <script>
-const showMessage = (type, title, message) => {
-  if (message) {
-    Swal.fire({
-      icon: type,
-      title: title,
-      text: message,
-    });
-  }
-};
+  const showMessage = (type, title, message) => {
+    if (message) {
+      Swal.fire({
+        icon: type,
+        title: title,
+        text: message,
+      });
+    }
+  };
 
-showMessage("success", "Berhasil Terkirim", $(".message-success").data("message-success"));
-showMessage("info", "For your information", $(".message-info").data("message-info"));
-showMessage("warning", "Peringatan!!", $(".message-warning").data("message-warning"));
-showMessage("error", "Kesalahan", $(".message-danger").data("message-danger"));
+  showMessage("success", "Berhasil Terkirim", $(".message-success").data("message-success"));
+  showMessage("info", "For your information", $(".message-info").data("message-info"));
+  showMessage("warning", "Peringatan!!", $(".message-warning").data("message-warning"));
+  showMessage("error", "Kesalahan", $(".message-danger").data("message-danger"));
 </script>

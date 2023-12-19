@@ -25,7 +25,7 @@ $select_pembayaran = "SELECT *
                 FROM pembayaran 
                 JOIN hasil_seleksi ON pembayaran.id_hasil_seleksi=hasil_seleksi.id_hasil_seleksi
                 JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran
-                JOIN users ON pembayaran.id_user=users.id_user
+                JOIN users ON pendaftaran.id_user=users.id_user
                 WHERE pembayaran.order_id='$order_id'
                 ORDER BY pembayaran.id_pembayaran DESC
               ";

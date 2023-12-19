@@ -1,5 +1,5 @@
 <?php require_once("controller/script.php");
-$_SESSION["project_smak_wartabakti"]["name_page"] = "Visi Misi";
+$_SESSION["project_smak_wartabakti"]["name_page"] = "Data Guru";
 require_once("templates/top.php"); ?>
 
 <section class="heading-page header-text" id="top">
@@ -7,7 +7,7 @@ require_once("templates/top.php"); ?>
     <div class="row">
       <div class="col-lg-12">
         <h6>SMAS K Warta Bakti</h6>
-        <h2>Visi dan Misi</h2>
+        <h2>Data Guru</h2>
       </div>
     </div>
   </div>
@@ -17,15 +17,48 @@ require_once("templates/top.php"); ?>
   <div class="container">
     <div class="row">
       <div class="col-lg-8">
-        <div class="meeting-single-item">
-          <div class="down-content rounded-0">
-            <h2>Visi dan Misi SMA Swasta Katolik Warta Bakti</h2>
-            <hr>
-            <?php foreach ($views_visi_misi as $data) {
-              echo $data['deskripsi'];
-            } ?>
+        <?php foreach ($views_guru_visit as $data) : ?>
+          <div class="meeting-single-item mb-4">
+            <div class="down-content rounded-0">
+              <div class="row">
+                <div class="col-lg-4">
+                  <img src="<?= $baseURL ?>assets/img/no-image.png" alt="">
+                </div>
+                <div class="col-lg-8">
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr>
+                        <th scope="row" style="width: 200px;">Nama Lengkap</th>
+                        <td>:</td>
+                        <td><?= $data['nama_lengkap'] ?></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Nik</th>
+                        <td>:</td>
+                        <td><?= $data['nik'] ?></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Jenis Kelamin</th>
+                        <td>:</td>
+                        <td><?= $data['jk'] ?></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Tempat Lahir</th>
+                        <td>:</td>
+                        <td><?= $data['tempat_lahir'] ?></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Tanggal Lahir</th>
+                        <td>:</td>
+                        <td><?= $data['tgl_lahir'] ?></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        <?php endforeach; ?>
       </div>
       <div class="col-lg-4">
         <div class="meeting-single-item">
