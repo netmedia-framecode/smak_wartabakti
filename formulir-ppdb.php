@@ -43,9 +43,7 @@ require_once("templates/top.php"); ?>
         </div>
         <?php foreach ($views_galeri as $data) : ?>
           <div class="meeting-single-item mb-3">
-            <div class="down-content rounded-0">
-              <img src="<?= $baseURL ?>assets/img/galeri/<?= $data['image'] ?>" style="width: 100%;height: 250px; object-fit: cover;" alt="">
-            </div>
+            <img src="<?= $baseURL ?>assets/img/<?= $data['image'] ?>" style="width: 100%;height: 250px; object-fit: cover;" alt="">
           </div>
         <?php endforeach; ?>
       </div>

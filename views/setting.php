@@ -36,7 +36,7 @@ require_once("../templates/views_top.php"); ?>
                   <label for="bg">Masukan Warna Primary</label>
                   <div class="d-flex justify-content-start align-content-center">
                     <input type="color" name="bg" class="form-control w-50" id="bg" value="<?= $data['bg'] ?>" required>
-                    <span class="my-auto ml-3" id="bgCode">#3a61d0</span>
+                    <span class="my-auto ml-3" id="bgCode"><?= $data['bg'] ?></span>
                   </div>
                 </div>
 
