@@ -58,7 +58,12 @@ require_once("../templates/views_top.php"); ?>
                         </div>
                         <form action="" method="post">
                           <input type="hidden" name="id_guru" value="<?= $data['id_guru'] ?>">
+                          <input type="hidden" name="img_guruOld" value="<?= $data['img_guru'] ?>">
                           <div class="modal-body">
+                            <div class="form-group">
+                              <label for="img">Unggah Gambar</label>
+                              <input type="file" name="img" class="form-control" id="img">
+                            </div>
                             <div class="form-group">
                               <label for="nama_lengkap">Nama Lengkap</label>
                               <input type="text" name="nama_lengkap" value="<?= $data['nama_lengkap'] ?>" class="form-control" id="nama_lengkap" required>
@@ -106,6 +111,7 @@ require_once("../templates/views_top.php"); ?>
                         </div>
                         <form action="" method="post">
                           <input type="hidden" name="id_guru" value="<?= $data['id_guru'] ?>">
+                          <input type="hidden" name="img_guru" value="<?= $data['img_guru'] ?>">
                           <div class="modal-body">
                             <p>Jika anda yakin ingin menghapus data ini klik Hapus!</p>
                           </div>
@@ -135,8 +141,12 @@ require_once("../templates/views_top.php"); ?>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
           <div class="modal-body">
+            <div class="form-group">
+              <label for="img">Unggah Gambar</label>
+              <input type="file" name="img" class="form-control" id="img" required>
+            </div>
             <div class="form-group">
               <label for="nama_lengkap">Nama Lengkap</label>
               <input type="text" name="nama_lengkap" class="form-control" id="nama_lengkap" required>

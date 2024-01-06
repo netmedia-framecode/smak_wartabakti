@@ -22,7 +22,7 @@ require_once("templates/top.php"); ?>
             <div class="down-content rounded-0">
               <div class="row">
                 <div class="col-lg-4">
-                  <img src="<?= $baseURL ?>assets/img/no-image.png" alt="">
+                  <img src="<?= $baseURL ?>assets/img/guru/<?= $data['img_guru'] ?>" style="width: 100%;" alt="">
                 </div>
                 <div class="col-lg-8">
                   <table class="table table-sm">

@@ -2132,15 +2132,63 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
 
   function guru($conn, $data, $action)
   {
+    $path = "../assets/img/guru/";
+
     if ($action == "insert") {
-      $sql = "INSERT INTO guru(nama_lengkap,nik,jk,tempat_lahir,tgl_lahir) VALUES('$data[nama_lengkap]','$data[nik]','$data[jk]','$data[tempat_lahir]','$data[tgl_lahir]')";
+      $fileName = basename($_FILES["img"]["name"]);
+      $fileName = str_replace(" ", "-", $fileName);
+      $fileName_encrypt = crc32($fileName);
+      $ekstensiGambar = explode('.', $fileName);
+      $ekstensiGambar = strtolower(end($ekstensiGambar));
+      $imageUploadPath = $path . $fileName_encrypt . "." . $ekstensiGambar;
+      $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+      $allowTypes = array('jpg', 'png', 'jpeg');
+      if (in_array($fileType, $allowTypes)) {
+        $imageTemp = $_FILES["img"]["tmp_name"];
+        compressImage($imageTemp, $imageUploadPath, 75);
+        $img = $fileName_encrypt . "." . $ekstensiGambar;
+      } else {
+        $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+        $message_type = "danger";
+        alert($message, $message_type);
+        return false;
+      }
+      $sql = "INSERT INTO guru(img_guru,nama_lengkap,nik,jk,tempat_lahir,tgl_lahir) VALUES('$img','$data[nama_lengkap]','$data[nik]','$data[jk]','$data[tempat_lahir]','$data[tgl_lahir]')";
     }
 
     if ($action == "update") {
-      $sql = "UPDATE guru SET nama_lengkap='$data[nama_lengkap]', nik='$data[nik]', jk='$data[jk]', tempat_lahir='$data[tempat_lahir]', tgl_lahir='$data[tgl_lahir]' WHERE id_guru='$data[id_guru]'";
+      if (!empty($_FILES['img']["name"])) {
+        $fileName = basename($_FILES["img"]["name"]);
+        $fileName = str_replace(" ", "-", $fileName);
+        $fileName_encrypt = crc32($fileName);
+        $ekstensiGambar = explode('.', $fileName);
+        $ekstensiGambar = strtolower(end($ekstensiGambar));
+        $imageUploadPath = $path . $fileName_encrypt . "." . $ekstensiGambar;
+        $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+        $allowTypes = array('jpg', 'png', 'jpeg');
+        if (in_array($fileType, $allowTypes)) {
+          $imageTemp = $_FILES["img"]["tmp_name"];
+          compressImage($imageTemp, $imageUploadPath, 75);
+          $img = $fileName_encrypt . "." . $ekstensiGambar;
+          if ($data['img_guruOld'] !== "default.png") {
+            unlink($path . $data['img_guruOld']);
+          }
+        } else {
+          $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+          $message_type = "danger";
+          alert($message, $message_type);
+          return false;
+        }
+      } else if (empty($_FILE['img']["name"])) {
+        $img = $data['img_guruOld'];
+      }
+      $sql = "UPDATE guru SET img_guru='$img', nama_lengkap='$data[nama_lengkap]', nik='$data[nik]', jk='$data[jk]', tempat_lahir='$data[tempat_lahir]', tgl_lahir='$data[tgl_lahir]' WHERE id_guru='$data[id_guru]'";
     }
 
     if ($action == "delete") {
+      if ($data['img_guru'] !== "default.png") {
+        unlink($path . $data['img_guru']);
+      }
       $sql = "DELETE FROM guru WHERE id_guru='$data[id_guru]'";
     }
 

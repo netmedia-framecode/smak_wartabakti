@@ -11,88 +11,90 @@ require_once("../templates/views_top.php"); ?>
   </div>
 
   <!-- Content Row -->
-  <div class="row">
+  <?php if ($id_role == 1) { ?>
+    <div class="row">
 
-    <div class="col-xl-3 col-md-6 mb-4">
-      <a href="users" class="text-decoration-none">
-        <div class="card border-left-primary shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                  Users</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $counts_users ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-users fa-2x text-gray-300"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-      <a href="pendaftaran" class="text-decoration-none">
-        <div class="card border-left-success shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                  Pendaftaran</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $counts_pendaftaran ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-list-ul fa-2x text-gray-300"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-      <a href="hasil-seleksi" class="text-decoration-none">
-        <div class="card border-left-info shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Seleksi
+      <div class="col-xl-3 col-md-6 mb-4">
+        <a href="users" class="text-decoration-none">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    Users</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $counts_users ?></div>
                 </div>
-                <div class="row no-gutters align-items-center">
-                  <div class="col-auto">
-                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $counts_hasil_seleksi ?></div>
+                <div class="col-auto">
+                  <i class="fas fa-users fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <a href="pendaftaran" class="text-decoration-none">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    Pendaftaran</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $counts_pendaftaran ?></div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-list-ul fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <a href="hasil-seleksi" class="text-decoration-none">
+          <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Seleksi
+                  </div>
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-auto">
+                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $counts_hasil_seleksi ?></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-list-ul fa-2x text-gray-300"></i>
+                <div class="col-auto">
+                  <i class="fas fa-list-ul fa-2x text-gray-300"></i>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <div class="col-xl-3 col-md-6 mb-4">
-      <a href="pembayaran" class="text-decoration-none">
-        <div class="card border-left-warning shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                  Pembayaran</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $counts_pembayaran ?></div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-user-md fa-2x text-gray-300"></i>
+      <div class="col-xl-3 col-md-6 mb-4">
+        <a href="pembayaran" class="text-decoration-none">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                    Pembayaran</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $counts_pembayaran ?></div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-user-md fa-2x text-gray-300"></i>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
     </div>
-  </div>
+  <?php } ?>
 
   <div class="row">
     <div class="col-lg-12 mb-4">
