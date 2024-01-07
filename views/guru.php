@@ -56,7 +56,7 @@ require_once("../templates/views_top.php"); ?>
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
-                        <form action="" method="post">
+                        <form action="" method="post" enctype="multipart/form-data">
                           <input type="hidden" name="id_guru" value="<?= $data['id_guru'] ?>">
                           <input type="hidden" name="img_guruOld" value="<?= $data['img_guru'] ?>">
                           <div class="modal-body">
