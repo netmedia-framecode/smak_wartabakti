@@ -24,10 +24,12 @@
           <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
           Profil
         </a>
-        <a class="dropdown-item" href="<?= $baseURL ?>views/setting">
-          <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-          Setting
-        </a>
+        <?php if ($id_role == 1) { ?>
+          <a class="dropdown-item" href="setting">
+            <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+            Setting
+          </a>
+        <?php } ?>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

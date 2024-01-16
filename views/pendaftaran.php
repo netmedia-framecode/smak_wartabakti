@@ -10,6 +10,44 @@ require_once("../templates/views_top.php"); ?>
     <h1 class="h3 mb-0 text-gray-800"><?= $_SESSION["project_smak_wartabakti"]["name_page"] ?></h1>
   </div>
 
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Grafik</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="chart-area">
+            <?php
+            $currentYear = date("Y");
+            $sql = "SELECT 'Pendaftaran' as category, MONTH(tanggal_pendaftaran) as month, jenis_kelamin, COUNT(*) as total FROM pendaftaran WHERE YEAR(tanggal_pendaftaran) = $currentYear AND MONTH(tanggal_pendaftaran) BETWEEN 1 AND 12 GROUP BY month, jenis_kelamin";
+
+            $result = $conn->query($sql);
+            $dataGrafik = [];
+
+            if ($result->num_rows > 0) {
+              while ($row = $result->fetch_assoc()) {
+                $monthName = date("F", mktime(0, 0, 0, $row['month'], 1));
+                $dataGrafik[] = [
+                  'category' => $row['jenis_kelamin'], // Menggunakan jenis kelamin sebagai kategori
+                  'month' => $monthName,
+                  'total' => $row['total'],
+                ];
+              }
+            }
+            ?>
+            <canvas id="chart-pendaftaran"></canvas>
+            <script>
+              var dataGrafik = <?php echo json_encode($dataGrafik); ?>;
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="card shadow mb-4 border-0">
     <div class="card-body">
       <div class="table-responsive">

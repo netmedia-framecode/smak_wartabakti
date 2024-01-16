@@ -73,7 +73,7 @@ require_once("../templates/views_top.php"); ?>
             </tr>
           </tfoot>
           <tbody>
-            <?php foreach ($views_hasil_seleksi as $data) { ?>
+            <?php foreach ($views_hasil_seleksiAdmin as $data) { ?>
               <tr>
                 <td><?= $data['status_lulus'] ?></td>
                 <td><?= $data['nama_lengkap'] ?></td>

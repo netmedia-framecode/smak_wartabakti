@@ -74,7 +74,7 @@ require_once("../templates/views_top.php"); ?>
                             </div>
                             <div class="form-group">
                               <label for="jk">Jenis Kelamin</label>
-                              <select name="jk" class="form-control" aria-label="Default select example">
+                              <select name="jk" class="form-control" aria-label="Default select example" required>
                                 <option value="" selected>Pilih Jenis Kelamin</option>
                                 <option value="Laki-Laki">Laki-Laki</option>
                                 <option value="Perempuan">Perempuan</option>

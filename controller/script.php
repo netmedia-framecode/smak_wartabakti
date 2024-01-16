@@ -783,6 +783,12 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
     }
   }
 
+  if ($id_role <= 2) {
+    $select_hasil_seleksiAdmin = "SELECT * FROM hasil_seleksi JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran ORDER BY hasil_seleksi.id_hasil_seleksi ASC";
+  } else if ($id_role == 3) {
+    $select_hasil_seleksiAdmin = "SELECT * FROM hasil_seleksi JOIN pendaftaran ON hasil_seleksi.id_pendaftaran=pendaftaran.id_pendaftaran WHERE pendaftaran.id_user='$id_user' ORDER BY hasil_seleksi.id_hasil_seleksi ASC";
+  }
+  $views_hasil_seleksiAdmin = mysqli_query($conn, $select_hasil_seleksiAdmin);
   if (isset($_POST["hasil_seleksi"])) {
     $validated_post = array_map(function ($value) use ($conn) {
       return valid($conn, $value);

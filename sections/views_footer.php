@@ -55,7 +55,8 @@
 <script src="<?= $baseURL ?>assets/js/demo/datatables-demo.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="<?= $baseURL ?>assets/js/demo/chart-area-demo.js"></script>
+<script src="<?= $baseURL ?>assets/js/demo/chart-dashboard.js"></script>
+<script src="<?= $baseURL ?>assets/js/demo/chart-pendaftaran.js"></script>
 <script src="<?= $baseURL ?>assets/js/demo/chart-pie-demo.js"></script>
 
 <script>
