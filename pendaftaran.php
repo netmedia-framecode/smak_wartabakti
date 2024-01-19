@@ -22,7 +22,7 @@ require_once("templates/top.php"); ?>
             <h4>PPDB <?= date("Y") ?></h4>
             <ul>
               <li class="mb-2">
-                <a href="formulir-ppdb" class="text-dark"><i class="bi bi-arrow-return-right"></i> Formulir PPDB</a>
+                <a href="panduan" class="text-dark"><i class="bi bi-arrow-return-right"></i> Panduan</a>
               </li>
               <?php foreach ($views_formulir as $data) { ?>
                 <li class="mb-2">

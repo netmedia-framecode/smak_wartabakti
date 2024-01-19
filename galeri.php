@@ -29,6 +29,7 @@ require_once("templates/top.php"); ?>
               </div>
               <div class="modal-body">
                 <img src="<?= $baseURL ?>assets/img/<?= $data['image'] ?>" class="img-thumbnail" alt="<?= $data['image'] ?>">
+                <p><?= $data['ket'] ?></p>
               </div>
             </div>
           </div>

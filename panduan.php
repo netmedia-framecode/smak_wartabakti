@@ -1,5 +1,5 @@
 <?php require_once("controller/script.php");
-$_SESSION["project_smak_wartabakti"]["name_page"] = "Pengumuman";
+$_SESSION["project_smak_wartabakti"]["name_page"] = "Panduan Pendaftaran";
 require_once("templates/top.php"); ?>
 
 <section class="heading-page header-text" id="top">
@@ -7,7 +7,7 @@ require_once("templates/top.php"); ?>
     <div class="row">
       <div class="col-lg-12">
         <h6>SMAS K Warta Bakti</h6>
-        <h2>Formulir PPDB</h2>
+        <h2>Panduan Pendaftaran</h2>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@ require_once("templates/top.php"); ?>
             <h4>PPDB <?= date("Y") ?></h4>
             <ul>
               <li class="mb-2">
-                <a href="formulir-ppdb" class="text-dark"><i class="bi bi-arrow-return-right"></i> Formulir PPDB</a>
+                <a href="panduan" class="text-dark"><i class="bi bi-arrow-return-right"></i> Panduan</a>
               </li>
               <?php foreach ($views_formulir as $data) { ?>
                 <li class="mb-2">
@@ -48,13 +48,13 @@ require_once("templates/top.php"); ?>
         <?php endforeach; ?>
       </div>
       <div class="col-lg-8 mb-4">
-        <?php foreach ($views_formulir as $data) { ?>
+        <?php foreach ($views_panduan as $data) : ?>
           <div class="meeting-single-item mb-3">
             <div class="down-content rounded-0">
-              <embed src="<?= $baseURL ?>assets/files/formulir/<?= $data['formulir'] ?>" type="application/pdf" width="100%" height="700px">
+              <?= $data['deskripsi'] ?>
             </div>
           </div>
-        <?php } ?>
+        <?php endforeach; ?>
       </div>
     </div>
   </div>

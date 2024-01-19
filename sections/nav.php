@@ -87,7 +87,7 @@
             <li class="has-sub">
               <a href="javascript:void(0)">PPDB <?= date("Y") ?></a>
               <ul class="sub-menu">
-                <li><a href="formulir-ppdb">Formulir PPDB</a></li>
+                <li><a href="panduan">Panduan</a></li>
                 <?php foreach ($views_formulir as $data) { ?>
                   <li><a href="<?= $baseURL ?>assets/files/formulir/<?= $data['formulir'] ?>" download="<?= $data['formulir'] ?>">Download Formulir</a></li>
                 <?php } ?>

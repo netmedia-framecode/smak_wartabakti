@@ -1389,46 +1389,60 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
     $path = "../assets/img/";
 
     if ($action == "insert") {
-      if (isset($_FILES['images'])) {
-        $files = $_FILES['images'];
-
-        for ($i = 0; $i < count($files['name']); $i++) {
-          $file_name = $files['name'][$i];
-          $file_tmp = $files['tmp_name'][$i];
-          $file_size = $files['size'][$i];
-
-          if ($file_size > 2097152) {
-            $_SESSION['message-danger'] = "File size must be exactly 2 MB";
-            $_SESSION['time-message'] = time();
-            return false;
-          }
-
-          $fileName = str_replace(" ", "-", $file_name);
-          $fileName_encrypt = crc32($fileName);
-          $ekstensiGambar = explode('.', $fileName);
-          $ekstensiGambar = strtolower(end($ekstensiGambar));
-          $imageUploadPath = $path . "galeri_" . $fileName_encrypt . "." . $ekstensiGambar;
-          $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
-          $allowTypes = array('jpg', 'png', 'jpeg');
-          if (in_array($fileType, $allowTypes)) {
-            compressImage($file_tmp, $imageUploadPath, 75);
-            $image = "galeri_" . $fileName_encrypt . "." . $ekstensiGambar;
-            mysqli_query($conn, "INSERT INTO galeri(image) VALUES('$image')");
-          } else {
-            $_SESSION['message-danger'] = "Sorry, only JPG, JPEG and PNG image files are allowed.";
-            $_SESSION['time-message'] = time();
-            return false;
-          }
-        }
+      $fileName = basename($_FILES["image"]["name"]);
+      $fileName = str_replace(" ", "-", $fileName);
+      $fileName_encrypt = crc32($fileName);
+      $ekstensiGambar = explode('.', $fileName);
+      $ekstensiGambar = strtolower(end($ekstensiGambar));
+      $imageUploadPath = $path . "galeri_" . $fileName_encrypt . "." . $ekstensiGambar;
+      $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+      $allowTypes = array('jpg', 'png', 'jpeg');
+      if (in_array($fileType, $allowTypes)) {
+        $imageTemp = $_FILES["image"]["tmp_name"];
+        compressImage($imageTemp, $imageUploadPath, 75);
+        $image = "galeri_" . $fileName_encrypt . "." . $ekstensiGambar;
+      } else {
+        $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+        $message_type = "danger";
+        alert($message, $message_type);
+        return false;
       }
+      $sql = "INSERT INTO galeri(image,ket) VALUES('$image','$data[ket]')";
+    }
+
+    if ($action == "update") {
+      if (!empty($_FILES['image']["name"])) {
+        $fileName = basename($_FILES["image"]["name"]);
+        $fileName = str_replace(" ", "-", $fileName);
+        $fileName_encrypt = crc32($fileName);
+        $ekstensiGambar = explode('.', $fileName);
+        $ekstensiGambar = strtolower(end($ekstensiGambar));
+        $imageUploadPath = $path . $fileName_encrypt . "." . $ekstensiGambar;
+        $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+        $allowTypes = array('jpg', 'png', 'jpeg');
+        if (in_array($fileType, $allowTypes)) {
+          $imageTemp = $_FILES["image"]["tmp_name"];
+          compressImage($imageTemp, $imageUploadPath, 75);
+          $image = $fileName_encrypt . "." . $ekstensiGambar;
+          unlink($path . $data['imageOld']);
+        } else {
+          $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+          $message_type = "danger";
+          alert($message, $message_type);
+          return false;
+        }
+      } else if (empty($_FILE['image']["name"])) {
+        $image = $data['imageOld'];
+      }
+      $sql = "UPDATE galeri SET image='$image', ket='$data[ket]' WHERE id_galeri='$data[id_galeri]'";
     }
 
     if ($action == "delete") {
       unlink($path . $data['image']);
       $sql = "DELETE FROM galeri WHERE id_galeri='$data[id_galeri]'";
-      mysqli_query($conn, $sql);
     }
 
+    mysqli_query($conn, $sql);
     return mysqli_affected_rows($conn);
   }
 
@@ -2235,6 +2249,16 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
   {
     if ($action == "update") {
       $sql = "UPDATE sejarah SET deskripsi='$data[deskripsi]'";
+    }
+
+    mysqli_query($conn, $sql);
+    return mysqli_affected_rows($conn);
+  }
+
+  function panduan($conn, $data, $action)
+  {
+    if ($action == "update") {
+      $sql = "UPDATE panduan SET deskripsi='$data[deskripsi]'";
     }
 
     mysqli_query($conn, $sql);

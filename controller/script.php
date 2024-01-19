@@ -46,6 +46,8 @@ $select_ekstrakulikuler_visit = "SELECT * FROM ekstrakulikuler";
 $views_ekstrakulikuler_visit = mysqli_query($conn, $select_ekstrakulikuler_visit);
 $select_sejarah = "SELECT * FROM sejarah";
 $views_sejarah = mysqli_query($conn, $select_sejarah);
+$select_panduan = "SELECT * FROM panduan";
+$views_panduan = mysqli_query($conn, $select_panduan);
 
 if (isset($_POST["kontak"])) {
   $validated_post = array_map(function ($value) use ($conn) {
@@ -714,6 +716,15 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       exit();
     }
   }
+  if (isset($_POST["edit_menu_galeri"])) {
+    if (menu_galeri($conn, $_POST, $action = 'update') > 0) {
+      $message = "Gambar berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: galeri");
+      exit();
+    }
+  }
   if (isset($_POST["delete_menu_galeri"])) {
     $validated_post = array_map(function ($value) use ($conn) {
       return valid($conn, $value);
@@ -947,6 +958,16 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message_type = "success";
       alert($message, $message_type);
       header("Location: sejarah");
+      exit();
+    }
+  }
+
+  if (isset($_POST["edit_panduan"])) {
+    if (panduan($conn, $_POST, $action = 'update') > 0) {
+      $message = "Panduan pendaftaran berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: panduan");
       exit();
     }
   }
