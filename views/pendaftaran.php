@@ -8,8 +8,37 @@ require_once("../templates/views_top.php"); ?>
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800"><?= $_SESSION["project_smak_wartabakti"]["name_page"] ?></h1>
-    <?php if ($id_role == 1) { ?>
-      <a href="export-pendaftaran" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" target="_blank"><i class="bi bi-download"></i> Export</a>
+    <?php if ($id_role <= 2) { ?>
+      <a href="" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" data-toggle="modal" data-target="#export"><i class="bi bi-download"></i> Export</a>
+      <div class="modal fade" id="export" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header border-bottom-0 shadow">
+              <h5 class="modal-title" id="exampleModalLabel">Export Pendaftaran</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="export-pendaftaran" method="get">
+              <div class="modal-body">
+                <p>Pilih Gelombang berapa yang ingin di export atau bisa semuanya dengan mongkosongkan pilihan berikut:</p>
+                <div class="form-group">
+                  <label for="gelombang">Gelombang</label>
+                  <select name="gelombang" class="form-control" id="gelombang">
+                    <option value="" selected>Pilih Gelombang</option>
+                    <?php foreach ($views_jadwal_daftar as $data_jd) { ?>
+                      <option value="<?= $data_jd['id_jd'] ?>"><?= $data_jd['gelombang'] ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer justify-content-center border-top-0">
+                <button type="submit" class="btn btn-success btn-sm">Export</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     <?php } ?>
   </div>
 

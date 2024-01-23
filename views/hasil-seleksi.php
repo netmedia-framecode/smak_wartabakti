@@ -8,10 +8,9 @@ require_once("../templates/views_top.php"); ?>
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800"><?= $_SESSION["project_smak_wartabakti"]["name_page"] ?></h1>
-    <?php if ($id_role == 1) { ?>
+    <?php if ($id_role <= 2) { ?>
       <div class="col-lg-6 text-right">
-        <a href="export-ppdb" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="bi bi-download"></i> Export PPDB</a>
-        <a href="export-ppdb-lulus" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="bi bi-download"></i> Export PPDB Lulus</a>
+        <a href="export-hasil-seleksi" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" target="_blank"><i class="bi bi-download"></i> Export</a>
       </div>
     <?php } ?>
   </div>

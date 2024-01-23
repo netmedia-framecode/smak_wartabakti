@@ -19,6 +19,7 @@ require_once("../templates/views_top.php"); ?>
             <tr>
               <th class="text-center">Image</th>
               <th class="text-center">Deskripsi</th>
+              <th class="text-center">Kategori</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
@@ -26,6 +27,7 @@ require_once("../templates/views_top.php"); ?>
             <tr>
               <th class="text-center">Image</th>
               <th class="text-center">Deskripsi</th>
+              <th class="text-center">Kategori</th>
               <th class="text-center">Aksi</th>
             </tr>
           </tfoot>
@@ -36,6 +38,7 @@ require_once("../templates/views_top.php"); ?>
                 <td>
                   <p><?= $data['deskripsi'] ?></p>
                 </td>
+                <td><?= $data['kategori'] ?></td>
                 <td class="text-center">
                   <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus<?= $data['id'] ?>">
                     <i class="bi bi-trash3"></i> Hapus
@@ -90,6 +93,14 @@ require_once("../templates/views_top.php"); ?>
             <div class="form-group">
               <label for="deskripsi">Deskripsi</label>
               <textarea name="deskripsii" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="kategori">Kategori</label>
+              <select name="kategori" class="form-control" id="kategori" required>
+                <option value="" selected>Pilih Kategori</option>
+                <option value="Non Akademi">Non Akademi</option>
+                <option value="Akademi">Akademi</option>
+              </select>
             </div>
           </div>
           <div class="modal-footer justify-content-center border-top-0">

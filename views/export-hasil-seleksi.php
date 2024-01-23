@@ -6,7 +6,28 @@ $hasil_seleksi = mysqli_query($conn, "SELECT * FROM hasil_seleksi JOIN pendaftar
 
 $mpdf = new \Mpdf\Mpdf();
 
-$mpdf->WriteHTML('<h2 style="text-align: center;">Lulus Seleksi Pendaftaran Peserta Didik Baru <br>SMA Katholik Wartabakti</h2>');
+$mpdf->WriteHTML('<div style="border-bottom: 3px solid black;width: 100%;">
+  <table border="0" style="width: 100%;">
+    <tbody>
+      <tr>
+        <th style="text-align: center;">
+          <img src="../assets/img/logo-kiri.png" alt="" style="width: 100px;height: 100px;">
+        </th>
+        <td style="text-align: center;">
+          <h3>PEMERINTAH PROVINSI NUSA TENGGARA TIMUR<br>DINAS PENDIDIKAN DAN KEBUDAYAAN<br>YAYASAN PENDIDIKAN SNUNA KABUPATEN TIMOR TENGAH UTARA<br>SMKS KATOLIK KEFAMENANU</h3>
+          <p style="font-size: 14px;">Jl. Yos Soedarso, Kelurahan Aplasi-Kefamenanu | Telp. 0388[31448]- email: smkkatolikkefa@gmail.com</p>
+        </td>
+        <th style="text-align: center;">
+          <img src="../assets/img/logo-smarta.png" alt="" style="width: 100px;height: 100px;">
+        </th>
+      </tr>
+    </tbody>
+  </table>
+</div>');
+
+$tahunAjaranSaatIni = date('Y');
+$tahunAjaranBerikutnya = $tahunAjaranSaatIni + 1;
+$mpdf->WriteHTML('<h3 style="text-align: center;">Lulus Seleksi Pendaftaran Peserta Didik Baru <br>SMA Katholik Wartabakti <br>Tahun Ajaran ' . $tahunAjaranSaatIni . '/' . $tahunAjaranBerikutnya . '</h3>');
 
 $mpdf->WriteHTML('<table style="border-collapse: collapse; width: 100%; margin: auto;">
   <thead>
@@ -73,5 +94,7 @@ if (mysqli_num_rows($hasil_seleksi) > 0) {
 $mpdf->WriteHTML('</tbody>
 </table>');
 
-$mpdf->Output('Lulus_Seleksi_Pendaftaran_Peserta_Didik_Baru.pdf', 'D');
+// $mpdf->Output();
+$mpdf->OutputHttpDownload('Lulus_Seleksi_PPDB.pdf');
+header("Location: hasil-seleksi");
 exit;

@@ -21,6 +21,7 @@ require_once("templates/top.php"); ?>
           <div class="meeting-single-item mb-4">
             <img src="<?= $baseURL ?>assets/img/ekstrakulikuler/<?= $data['img'] ?>" alt="">
             <div class="down-content rounded-0">
+              <p style="margin-top: -30px;margin-bottom: 40px;">Kategori: <?= $data['kategori'] ?></p>
               <p><?= $data['deskripsi'] ?></p>
             </div>
           </div>

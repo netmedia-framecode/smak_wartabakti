@@ -48,6 +48,10 @@ $select_sejarah = "SELECT * FROM sejarah";
 $views_sejarah = mysqli_query($conn, $select_sejarah);
 $select_panduan = "SELECT * FROM panduan";
 $views_panduan = mysqli_query($conn, $select_panduan);
+$select_prestasi = "SELECT * FROM prestasi";
+$views_prestasi = mysqli_query($conn, $select_prestasi);
+$select_jadwal_daftar = "SELECT * FROM jadwal_daftar";
+$views_jadwal_daftar = mysqli_query($conn, $select_jadwal_daftar);
 
 if (isset($_POST["kontak"])) {
   $validated_post = array_map(function ($value) use ($conn) {
@@ -968,6 +972,62 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
       $message_type = "success";
       alert($message, $message_type);
       header("Location: panduan");
+      exit();
+    }
+  }
+
+  if (isset($_POST["add_prestasi"])) {
+    if (prestasi($conn, $_POST, $action = 'insert', $deskripsi = $_POST['deskripsi']) > 0) {
+      $message = "Data prestasi berhasil ditambahkan.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: prestasi");
+      exit();
+    }
+  }
+  if (isset($_POST["edit_prestasi"])) {
+    if (prestasi($conn, $_POST, $action = 'update', $deskripsi = $_POST['deskripsi']) > 0) {
+      $message = "Data prestasi berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: prestasi");
+      exit();
+    }
+  }
+  if (isset($_POST["delete_prestasi"])) {
+    if (prestasi($conn, $_POST, $action = 'delete', $deskripsi = $_POST['deskripsi']) > 0) {
+      $message = "Data prestasi berhasil dihapus.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: prestasi");
+      exit();
+    }
+  }
+
+  if (isset($_POST["add_jadwal_daftar"])) {
+    if (jadwal_daftar($conn, $_POST, $action = 'insert') > 0) {
+      $message = "Data jadwal_daftar berhasil ditambahkan.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: jadwal-pendaftaran");
+      exit();
+    }
+  }
+  if (isset($_POST["edit_jadwal_daftar"])) {
+    if (jadwal_daftar($conn, $_POST, $action = 'update') > 0) {
+      $message = "Data jadwal_daftar berhasil diubah.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: jadwal-pendaftaran");
+      exit();
+    }
+  }
+  if (isset($_POST["delete_jadwal_daftar"])) {
+    if (jadwal_daftar($conn, $_POST, $action = 'delete') > 0) {
+      $message = "Data jadwal_daftar berhasil dihapus.";
+      $message_type = "success";
+      alert($message, $message_type);
+      header("Location: jadwal-pendaftaran");
       exit();
     }
   }

@@ -140,8 +140,52 @@ function komentar($conn, $data, $action)
   return mysqli_affected_rows($conn);
 }
 
+function klasifikasiJadwalPendaftaran($tglBuka, $tglTutup, $gelombang)
+{
+  $sekarang = date('Y-m-d');
+
+  if ($sekarang < $tglBuka) {
+    return false;
+  } elseif ($sekarang >= $tglBuka && $sekarang <= $tglTutup) {
+    return true;
+  } elseif ($sekarang > $tglTutup) {
+    return "Pendaftaran untuk gelombang $gelombang telah ditutup.";
+  }
+}
+
 function pendaftaran($conn, $data, $action)
 {
+  $sekarang = date('Y-m-d');
+  $query = "SELECT * FROM jadwal_daftar WHERE '$sekarang' BETWEEN tgl_buka AND tgl_tutup";
+  $result = mysqli_query($conn, $query);
+  if ($result) {
+    $jadwal = mysqli_fetch_assoc($result);
+    $id_jd = $jadwal['id_jd'];
+    $kuota = $jadwal['kuota'];
+    $check_peserta = "SELECT * FROM pendaftaran WHERE id_jd='$id_jd'";
+    $check_pesertas = mysqli_query($conn, $check_peserta);
+    $data_peserta = mysqli_num_rows($check_pesertas);
+    if ($data_peserta > $kuota) {
+      $message = "Maaf, saat ini kuota pendaftaran peserta didik baru telah penuh.";
+      $message_type = "danger";
+      alert($message, $message_type);
+      return false;
+    }
+    $statusPendaftaran = klasifikasiJadwalPendaftaran($jadwal['tgl_buka'], $jadwal['tgl_tutup'], $jadwal['gelombang']);
+    if ($statusPendaftaran == false) {
+      $message = "Maaf, pendaftaran belum dibuka.";
+      $message_type = "danger";
+      alert($message, $message_type);
+      return false;
+    } elseif ($statusPendaftaran == true) {
+    } elseif ($statusPendaftaran == false) {
+      $message = "Maaf, pendaftaran untuk gelombang " . $jadwal['gelombang'] . " telah ditutup.";
+      $message_type = "danger";
+      alert($message, $message_type);
+      return false;
+    }
+  }
+
   if ($action == "insert") {
     $select_pendaftaran = "SELECT * FROM pendaftaran WHERE email='$data[email]'";
     $take_pendaftaran = mysqli_query($conn, $select_pendaftaran);
@@ -300,7 +344,7 @@ function pendaftaran($conn, $data, $action)
     </html>";
     smtp_mail($to, $subject, $message, "", "", 0, 0, true);
     $sql = "INSERT INTO users(id_user,id_active,name,email) VALUES('$id_user','1','$data[nama_lengkap]','$data[email]');";
-    $sql .= "INSERT INTO pendaftaran(id_user, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, email, nomor_telepon, asal_sekolah, formulir) VALUES ('$id_user', '$data[nama_lengkap]', '$data[jenis_kelamin]', '$data[tanggal_lahir]', '$data[alamat]', '$data[email]', '$data[nomor_telepon]', '$data[asal_sekolah]', '$formulir');";
+    $sql .= "INSERT INTO pendaftaran(id_jd, id_user, nama_lengkap, jenis_kelamin, tanggal_lahir, alamat, email, nomor_telepon, asal_sekolah, formulir) VALUES ('$id_jd', '$id_user', '$data[nama_lengkap]', '$data[jenis_kelamin]', '$data[tanggal_lahir]', '$data[alamat]', '$data[email]', '$data[nomor_telepon]', '$data[asal_sekolah]', '$formulir');";
   }
 
   mysqli_multi_query($conn, $sql);
@@ -2233,7 +2277,7 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
         alert($message, $message_type);
         return false;
       }
-      mysqli_query($conn, "INSERT INTO ekstrakulikuler(img,deskripsi) VALUES('$img','$data[deskripsii]')");
+      mysqli_query($conn, "INSERT INTO ekstrakulikuler(img,deskripsi,kategori) VALUES('$img','$data[deskripsii]','$data[kategori]')");
     }
 
     if ($action == "delete") {
@@ -2259,6 +2303,86 @@ if (isset($_SESSION["project_smak_wartabakti"]["users"])) {
   {
     if ($action == "update") {
       $sql = "UPDATE panduan SET deskripsi='$data[deskripsi]'";
+    }
+
+    mysqli_query($conn, $sql);
+    return mysqli_affected_rows($conn);
+  }
+
+  function prestasi($conn, $data, $action, $deskripsi)
+  {
+    $path = "../assets/img/prestasi/";
+
+    if ($action == "insert") {
+      $fileName = basename($_FILES["img"]["name"]);
+      $fileName = str_replace(" ", "-", $fileName);
+      $fileName_encrypt = crc32($fileName);
+      $ekstensiGambar = explode('.', $fileName);
+      $ekstensiGambar = strtolower(end($ekstensiGambar));
+      $imageUploadPath = $path . $fileName_encrypt . "." . $ekstensiGambar;
+      $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+      $allowTypes = array('jpg', 'png', 'jpeg');
+      if (in_array($fileType, $allowTypes)) {
+        $imageTemp = $_FILES["img"]["tmp_name"];
+        compressImage($imageTemp, $imageUploadPath, 75);
+        $img = $fileName_encrypt . "." . $ekstensiGambar;
+      } else {
+        $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+        $message_type = "danger";
+        alert($message, $message_type);
+        return false;
+      }
+      $sql = "INSERT INTO prestasi(image,judul,deskripsi,kategori) VALUES('$img','$data[judul]','$deskripsi','$data[kategori]')";
+    }
+
+    if ($action == "update") {
+      if (!empty($_FILES['img']["name"])) {
+        $fileName = basename($_FILES["img"]["name"]);
+        $fileName = str_replace(" ", "-", $fileName);
+        $fileName_encrypt = crc32($fileName);
+        $ekstensiGambar = explode('.', $fileName);
+        $ekstensiGambar = strtolower(end($ekstensiGambar));
+        $imageUploadPath = $path . $fileName_encrypt . "." . $ekstensiGambar;
+        $fileType = pathinfo($imageUploadPath, PATHINFO_EXTENSION);
+        $allowTypes = array('jpg', 'png', 'jpeg');
+        if (in_array($fileType, $allowTypes)) {
+          $imageTemp = $_FILES["img"]["tmp_name"];
+          compressImage($imageTemp, $imageUploadPath, 75);
+          $img = $fileName_encrypt . "." . $ekstensiGambar;
+          unlink($path . $data['imageOld']);
+        } else {
+          $message = "Maaf, hanya file gambar JPG, JPEG, dan PNG yang diizinkan.";
+          $message_type = "danger";
+          alert($message, $message_type);
+          return false;
+        }
+      } else if (empty($_FILE['img']["name"])) {
+        $img = $data['imageOld'];
+      }
+      $sql = "UPDATE prestasi SET image='$img', judul='$data[judul]', deskripsi='$deskripsi', kategori='$data[kategori]' WHERE id_prestasi='$data[id_prestasi]'";
+    }
+
+    if ($action == "delete") {
+      unlink($path . $data['image']);
+      $sql = "DELETE FROM prestasi WHERE id_prestasi='$data[id_prestasi]'";
+    }
+
+    mysqli_query($conn, $sql);
+    return mysqli_affected_rows($conn);
+  }
+
+  function jadwal_daftar($conn, $data, $action)
+  {
+    if ($action == "insert") {
+      $sql = "INSERT INTO jadwal_daftar(tgl_buka,tgl_tutup,gelombang,kuota) VALUES('$data[tgl_buka]','$data[tgl_tutup]','$data[gelombang]','$data[kuota]')";
+    }
+
+    if ($action == "update") {
+      $sql = "UPDATE jadwal_daftar SET tgl_buka='$data[tgl_buka]', tgl_tutup='$data[tgl_tutup]', gelombang='$data[gelombang]', kuota='$data[kuota]' WHERE id_jd='$data[id_jd]'";
+    }
+
+    if ($action == "delete") {
+      $sql = "DELETE FROM jadwal_daftar WHERE id_jd='$data[id_jd]'";
     }
 
     mysqli_query($conn, $sql);
