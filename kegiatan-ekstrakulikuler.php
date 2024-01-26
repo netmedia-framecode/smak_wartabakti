@@ -17,6 +17,38 @@ require_once("templates/top.php"); ?>
   <div class="container">
     <div class="row">
       <div class="col-lg-8">
+        <div class="d-flex justify-content-between">
+          <div class="col-lg-6 d-flex">
+            <form action="" method="post">
+              <input type="hidden" name="kategori" value="Akademi">
+              <button type="submit" name="kategori_ekstrakulikuler" class="btn btn-link">
+                <span class="badge bg-<?php if (!isset($_POST['kategori'])) {
+                                        echo "primary";
+                                      } else {
+                                        if ($_POST['kategori'] == "Akademi") {
+                                          echo "success";
+                                        } else {
+                                          echo "primary";
+                                        }
+                                      } ?>">Akademi</span>
+              </button>
+            </form>
+            <form action="" method="post">
+              <input type="hidden" name="kategori" value="Non Akademi">
+              <button type="submit" name="kategori_ekstrakulikuler" class="btn btn-link">
+                <span class="badge bg-<?php if (!isset($_POST['kategori'])) {
+                                        echo "primary";
+                                      } else {
+                                        if ($_POST['kategori'] == "Non Akademi") {
+                                          echo "success";
+                                        } else {
+                                          echo "primary";
+                                        }
+                                      } ?>">Non Akademi</span>
+              </button>
+            </form>
+          </div>
+        </div>
         <?php foreach ($views_ekstrakulikuler_visit as $data) : ?>
           <div class="meeting-single-item mb-4">
             <img src="<?= $baseURL ?>assets/img/ekstrakulikuler/<?= $data['img'] ?>" alt="">

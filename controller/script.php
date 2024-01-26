@@ -42,13 +42,23 @@ $select_hasil_seleksi = "SELECT * FROM hasil_seleksi JOIN pendaftaran ON hasil_s
 $views_hasil_seleksi = mysqli_query($conn, $select_hasil_seleksi);
 $select_guru_visit = "SELECT * FROM guru";
 $views_guru_visit = mysqli_query($conn, $select_guru_visit);
-$select_ekstrakulikuler_visit = "SELECT * FROM ekstrakulikuler";
+if (!isset($_POST['kategori_ekstrakulikuler'])) {
+  $select_ekstrakulikuler_visit = "SELECT * FROM ekstrakulikuler";
+} else {
+  $kategori = valid($conn, $_POST['kategori']);
+  $select_ekstrakulikuler_visit = "SELECT * FROM ekstrakulikuler WHERE kategori='$kategori'";
+}
 $views_ekstrakulikuler_visit = mysqli_query($conn, $select_ekstrakulikuler_visit);
 $select_sejarah = "SELECT * FROM sejarah";
 $views_sejarah = mysqli_query($conn, $select_sejarah);
 $select_panduan = "SELECT * FROM panduan";
 $views_panduan = mysqli_query($conn, $select_panduan);
-$select_prestasi = "SELECT * FROM prestasi";
+if (!isset($_POST['kategori_prestasi'])) {
+  $select_prestasi = "SELECT * FROM prestasi";
+} else {
+  $kategori = valid($conn, $_POST['kategori']);
+  $select_prestasi = "SELECT * FROM prestasi WHERE kategori='$kategori'";
+}
 $views_prestasi = mysqli_query($conn, $select_prestasi);
 $select_jadwal_daftar = "SELECT * FROM jadwal_daftar";
 $views_jadwal_daftar = mysqli_query($conn, $select_jadwal_daftar);
@@ -88,6 +98,24 @@ if (isset($_POST["pendaftaran"])) {
     alert($message, $message_type);
     header("Location: pendaftaran");
     exit();
+  }
+}
+if (isset($_POST['search_prestasi'])) {
+  $keyword = valid($conn, $_POST['keyword']);
+  $_SESSION['project_smak_wartabakti'] = [
+    'search_prestasi' => true,
+    'keyword' => $keyword,
+    "time" => time()
+  ];
+  header("Location: prestasi");
+  exit();
+}
+if (isset($_SESSION['project_smak_wartabakti']['search_prestasi'])) {
+  $keyword = valid($conn, $_SESSION['project_smak_wartabakti']['keyword']);
+  $select_prestasi = "SELECT * FROM prestasi WHERE judul LIKE '%$keyword%'";
+  $views_prestasi_search = mysqli_query($conn, $select_prestasi);
+  if (isset($_SESSION["project_smak_wartabakti"]["time"]) && (time() - $_SESSION["project_smak_wartabakti"]["time"]) > 10) {
+    unset($_SESSION['project_smak_wartabakti']['search_prestasi']);
   }
 }
 

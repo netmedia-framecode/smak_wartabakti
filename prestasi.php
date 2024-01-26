@@ -19,16 +19,71 @@ require_once("templates/top.php"); ?>
       <div class="col-lg-12">
         <div class="row">
           <div class="col-lg-8">
-            <?php foreach ($views_prestasi as $data) : ?>
-              <div class="meeting-single-item mb-3">
-                <div class="down-content rounded-0">
-                  <h2><?= $data['judul'] ?></h2>
-                  <img src="<?= $baseURL ?>assets/img/prestasi/<?= $data['image'] ?>" style="width: 80%;" alt="">
-                  <p>Kategori: <?= $data['kategori'] ?></p>
-                  <?= $data['deskripsi'] ?>
-                </div>
+            <div class="d-flex justify-content-between">
+              <div class="col-lg-6 d-flex">
+                <form action="" method="post">
+                  <input type="hidden" name="kategori" value="Akademi">
+                  <button type="submit" name="kategori_prestasi" class="btn btn-link">
+                    <span class="badge bg-<?php if (!isset($_POST['kategori'])) {
+                                            echo "primary";
+                                          } else {
+                                            if ($_POST['kategori'] == "Akademi") {
+                                              echo "success";
+                                            } else {
+                                              echo "primary";
+                                            }
+                                          } ?>">Akademi</span>
+                  </button>
+                </form>
+                <form action="" method="post">
+                  <input type="hidden" name="kategori" value="Non Akademi">
+                  <button type="submit" name="kategori_prestasi" class="btn btn-link">
+                    <span class="badge bg-<?php if (!isset($_POST['kategori'])) {
+                                            echo "primary";
+                                          } else {
+                                            if ($_POST['kategori'] == "Non Akademi") {
+                                              echo "success";
+                                            } else {
+                                              echo "primary";
+                                            }
+                                          } ?>">Non Akademi</span>
+                  </button>
+                </form>
               </div>
-            <?php endforeach; ?>
+              <div class="col-lg-6">
+                <form action="" method="post">
+                  <div class="input-group mb-3">
+                    <input type="text" name="keyword" class="form-control" placeholder="Search" aria-label="Search">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="submit" name="search_prestasi" id="button-addon2">Cari</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <?php if (isset($_SESSION['project_smak_wartabakti']['search_prestasi'])) {
+              foreach ($views_prestasi_search as $data) : ?>
+                <div class="meeting-single-item mb-3">
+                  <div class="down-content rounded-0">
+                    <h2><?= $data['judul'] ?></h2>
+                    <img src="<?= $baseURL ?>assets/img/prestasi/<?= $data['image'] ?>" style="width: 80%;" alt="">
+                    <p>Kategori: <?= $data['kategori'] ?></p>
+                    <?= $data['deskripsi'] ?>
+                  </div>
+                </div>
+              <?php endforeach;
+            } else {
+              foreach ($views_prestasi as $data) : ?>
+                <div class="meeting-single-item mb-3">
+                  <div class="down-content rounded-0">
+                    <h2><?= $data['judul'] ?></h2>
+                    <img src="<?= $baseURL ?>assets/img/prestasi/<?= $data['image'] ?>" style="width: 80%;" alt="">
+                    <p>Kategori: <?= $data['kategori'] ?></p>
+                    <?= $data['deskripsi'] ?>
+                  </div>
+                </div>
+            <?php endforeach;
+            } ?>
           </div>
           <div class="col-lg-4">
             <div class="meeting-single-item">
